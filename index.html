@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vhalen Company — Onboarding Estratégico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --navy:       #0D1B2A;
+    --navy2:      #112236;
+    --navy3:      #162C44;
+    --steel:      #4A7FA5;
+    --steel-light:#6B9DC0;
+    --steel-pale: #A8C4D8;
+    --surface:    #F4F6F7;
+    --surface2:   #E8EDF1;
+    --surface3:   #DDE4EA;
+    --white:      #FFFFFF;
+    --text-dark:  #0D1B2A;
+    --text-mid:   #2C4A62;
+    --text-muted: #6B8BA4;
+    --text-faint: #A0B4C4;
+    --border:     #C8D8E4;
+    --border2:    #B0C4D4;
+    --accent:     #4A7FA5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--surface);
+    color: var(--text-dark);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--steel), var(--steel-light), var(--steel-pale));
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 40px 44px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .logo-block {}
+  .logo-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--steel-pale);
+    margin-bottom: 8px;
+  }
+  .logo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+  .logo-name span { color: var(--steel-light); }
+  .logo-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .header-doc-label {
+    text-align: right;
+  }
+  .doc-tag {
+    display: inline-block;
+    border: 1px solid var(--steel);
+    padding: 6px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--steel-light);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .doc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--surface3);
+    font-style: italic;
+    display: block;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--navy2);
+    border-bottom: 1px solid rgba(74,127,165,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .progress-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .progress-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    position: relative;
+    border-radius: 2px;
+  }
+  .progress-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--steel), var(--steel-light));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--steel-light);
+    min-width: 34px;
+    text-align: right;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 40px 120px;
+  }
+
+  /* ── INTRO ── */
+  .intro-block {
+    background: var(--navy);
+    border-left: 3px solid var(--steel);
+    padding: 32px 40px;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .intro-block p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--steel-pale);
+    line-height: 1.9;
+    font-style: italic;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    background: var(--navy);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 2px solid var(--steel);
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--steel-light);
+    background: rgba(74,127,165,0.15);
+    padding: 4px 10px;
+    border: 1px solid rgba(74,127,165,0.3);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .section-hint {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
+    font-style: italic;
+  }
+
+  .section-body {
+    padding: 32px;
+  }
+
+  /* ── FIELD ── */
+  .field-group { margin-bottom: 24px; }
+  .field-label {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+  }
+  .field-hint {
+    display: block;
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .req { color: var(--steel); margin-left: 2px; }
+
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--border2);
+    color: var(--text-dark);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--steel);
+    border-bottom-color: var(--steel);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(74,127,165,0.08);
+  }
+  input::placeholder, textarea::placeholder { color: var(--text-faint); }
+  textarea { resize: vertical; min-height: 96px; line-height: 1.7; }
+  select { cursor: pointer; }
+  select option { background: var(--white); color: var(--text-dark); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* ── CHECKBOX ── */
+  .check-group { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13px;
+    color: var(--text-mid);
+    user-select: none;
+  }
+  .check-item:hover { border-color: var(--steel); background: #EEF3F7; }
+  .check-item.selected { border-color: var(--steel); background: #E3EEF6; color: var(--text-dark); }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border2);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s; border-radius: 2px;
+  }
+  .check-item.selected .check-box { background: var(--steel); border-color: var(--steel); }
+  .check-mark { font-size: 10px; color: var(--white); display: none; font-weight: 700; }
+  .check-item.selected .check-mark { display: block; }
+
+  /* ── RATING TABLE ── */
+  .rating-table { width: 100%; border-collapse: collapse; }
+  .rating-table thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    padding: 10px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+  .rating-table thead th:first-child { text-align: left; padding-left: 0; }
+  .rating-table tbody tr { border-bottom: 1px solid var(--border); }
+  .rating-table tbody tr:last-child { border-bottom: none; }
+  .rating-table tbody tr:hover { background: var(--surface); }
+  .rating-table tbody td { padding: 12px 6px; font-size: 13px; color: var(--text-mid); }
+  .rating-table tbody td:first-child { color: var(--text-dark); padding-left: 0; }
+  .stars { display: flex; justify-content: center; gap: 4px; }
+  .star {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    border-radius: 2px;
+  }
+  .star:hover { border-color: var(--steel); color: var(--steel); }
+  .star.active { background: var(--steel); border-color: var(--steel); color: var(--white); font-weight: 600; }
+
+  /* ── DIVIDER ── */
+  .field-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-section {
+    margin-top: 48px;
+    background: var(--navy);
+    padding: 48px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .submit-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--steel), var(--steel-light), var(--steel-pale));
+  }
+  .submit-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--steel-pale);
+    font-style: italic;
+    margin-bottom: 32px;
+    line-height: 1.8;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--steel);
+    color: var(--white);
+    border: none;
+    padding: 18px 52px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 0;
+  }
+  .btn-primary:hover { background: var(--steel-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,127,165,0.3); }
+
+  /* ── SUCCESS ── */
+  .success-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--navy);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+  }
+  .success-screen.visible { display: flex; }
+  .success-ring {
+    width: 80px; height: 80px;
+    border: 1px solid var(--steel);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 32px;
+    font-size: 28px;
+    color: var(--steel-light);
+    position: relative;
+  }
+  .success-ring::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 1px solid rgba(74,127,165,0.2);
+    border-radius: 50%;
+  }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .success-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 420px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+  .success-line {
+    width: 48px; height: 1px;
+    background: var(--steel);
+    margin: 20px auto;
+  }
+
+  @media (max-width: 680px) {
+    .header-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 32px 24px; }
+    .progress-inner { padding: 12px 24px; }
+    .main { padding: 32px 16px 100px; }
+    .section-body { padding: 24px 20px; }
+    .grid2 { grid-template-columns: 1fr; }
+    .intro-block { padding: 24px 20px; }
+    .section-hint { display: none; }
+    .submit-section { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-eyebrow">Strategic Intelligence</div>
+      <div class="logo-name">Vhalen <span>Company</span></div>
+      <div class="logo-tagline">Growth · Structure · Direction</div>
+    </div>
+    <div class="header-doc-label">
+      <div class="doc-tag">Documento Estratégico</div>
+      <span class="doc-title">Onboarding & Briefing de Cliente</span>
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <span class="progress-label">Progresso</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <span class="progress-pct" id="progressPct">0%</span>
+  </div>
+</div>
+
+<main class="main">
+
+  <div class="intro-block">
+    <p>Este documento é o ponto de partida da nossa parceria estratégica. Responda com clareza e honestidade — quanto mais contexto você compartilhar, mais precisa e eficaz será a nossa atuação. Não há resposta certa ou errada.</p>
+  </div>
+
+  <!-- 01 IDENTIFICAÇÃO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Identificação do Cliente</span>
+      <span class="section-hint">Dados institucionais e do responsável</span>
+    </div>
+    <div class="section-body">
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Nome / Razão Social <span class="req">*</span></label>
+          <input type="text" id="f_nome" placeholder="Nome da empresa ou pessoa" oninput="updateProgress()"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Nome do Responsável <span class="req">*</span></label>
+          <input type="text" id="f_responsavel" placeholder="Ponto de contato principal" oninput="updateProgress()"/>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Cargo / Posição</label>
+          <input type="text" id="f_cargo" placeholder="Seu cargo na empresa" oninput="updateProgress()"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">E-mail</label>
+          <input type="email" id="f_email" placeholder="contato@empresa.com" oninput="updateProgress()"/>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Segmento / Setor <span class="req">*</span></label>
+          <input type="text" id="f_segmento" placeholder="Ex: Tecnologia, Saúde, Varejo..." oninput="updateProgress()"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Porte da Empresa</label>
+          <select id="f_porte" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>MEI / Autônomo</option>
+            <option>Pequena Empresa</option>
+            <option>Média Empresa</option>
+            <option>Grande Empresa</option>
+            <option>Corporação</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Número de Colaboradores</label>
+          <select id="f_colaboradores" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Apenas eu (solopreneur)</option>
+            <option>2 a 5</option>
+            <option>6 a 20</option>
+            <option>21 a 50</option>
+            <option>51 a 200</option>
+            <option>200+</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tempo de Mercado</label>
+          <select id="f_tempo" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Menos de 1 ano</option>
+            <option>1 a 3 anos</option>
+            <option>3 a 7 anos</option>
+            <option>7 a 15 anos</option>
+            <option>15+ anos</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Localização / Atuação</label>
+          <input type="text" id="f_local" placeholder="Cidade, Estado, País ou âmbito" oninput="updateProgress()"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Website / Redes Sociais</label>
+          <input type="text" id="f_site" placeholder="Links principais" oninput="updateProgress()"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 CONTEXTO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Contexto e Posicionamento</span>
+      <span class="section-hint">Proposta de valor e mercado atual</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">O que a empresa faz? <span class="req">*</span></label>
+        <span class="field-hint">Descreva o negócio, produto ou serviço principal com suas próprias palavras.</span>
+        <textarea id="f_oqueefaz" rows="4" placeholder="Descreva brevemente..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Qual é o seu diferencial competitivo atual?</label>
+        <span class="field-hint">O que você oferece que os concorrentes não oferecem ou não fazem bem?</span>
+        <textarea id="f_diferencial" rows="3" placeholder="Seja direto e específico..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Proposta de Valor Central</label>
+        <span class="field-hint">Se você tivesse 15 segundos para convencer um cliente ideal, o que diria?</span>
+        <textarea id="f_proposta" rows="3" placeholder="Sua proposta de valor..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Público-Alvo Principal (ICP) <span class="req">*</span></label>
+          <input type="text" id="f_icp" placeholder="Quem é seu cliente ideal?" oninput="updateProgress()"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Ticket Médio (R$)</label>
+          <input type="text" id="f_ticket" placeholder="Valor médio por cliente/venda" oninput="updateProgress()"/>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Modelo de Receita</label>
+          <select id="f_receita" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Recorrência / Assinatura</option>
+            <option>Projeto / Escopo fechado</option>
+            <option>Produto (venda única)</option>
+            <option>Comissão / Marketplace</option>
+            <option>Híbrido</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Ciclo de Venda Médio</label>
+          <select id="f_ciclo" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Menos de 1 semana</option>
+            <option>1 a 4 semanas</option>
+            <option>1 a 3 meses</option>
+            <option>3 a 6 meses</option>
+            <option>6+ meses</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 DESAFIOS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Desafios e Objetivos</span>
+      <span class="section-hint">Problemas centrais e metas prioritárias</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Principal desafio atual <span class="req">*</span></label>
+        <span class="field-hint">Qual é o problema central que mais limita o crescimento ou a operação hoje?</span>
+        <textarea id="f_desafio" rows="4" placeholder="Seja honesto e preciso..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">O que motivou buscar suporte estratégico agora?</label>
+        <span class="field-hint">Qual foi o gatilho — um momento, resultado, ou situação específica?</span>
+        <textarea id="f_gatilho" rows="3" placeholder="O que mudou recentemente..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Objetivos prioritários para os próximos 12 meses <span class="req">*</span></label>
+        <span class="field-hint">Liste os 3 resultados mais importantes que você quer alcançar.</span>
+        <textarea id="f_objetivos" rows="4" placeholder="1. &#10;2. &#10;3. " oninput="updateProgress()"></textarea>
+      </div>
+      <hr class="field-divider"/>
+      <div class="field-group">
+        <label class="field-label">Onde está o maior gargalo? <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-faint)">(selecione todos que se aplicam)</span></label>
+        <span class="field-hint">Identifique as áreas que mais limitam o crescimento hoje.</span>
+        <div class="check-group" id="gargalos">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Estratégia e direção</div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Geração de leads / Vendas</div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Estrutura de processos internos</div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Cultura e gestão de equipe</div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Marketing e posicionamento</div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Tecnologia e ferramentas</div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><span class="check-mark">✓</span></div>Financeiro e escalabilidade</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 MERCADO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Mercado e Competitividade</span>
+      <span class="section-hint">Concorrência, canais e autoridade</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Principais concorrentes diretos</label>
+        <span class="field-hint">Quem são eles e o que fazem bem que você ainda não faz?</span>
+        <textarea id="f_concorrentes" rows="4" placeholder="Nome / o que fazem bem..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Como o cliente chega até você hoje?</label>
+        <span class="field-hint">Canais de aquisição ativos — indicação, redes sociais, Google, outros.</span>
+        <textarea id="f_canais" rows="3" placeholder="Ex: indicações, Instagram, Google Ads..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Presença Digital</label>
+          <select id="f_presenca" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Forte e ativa</option>
+            <option>Média / Inconsistente</option>
+            <option>Fraca</option>
+            <option>Praticamente inexistente</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Autoridade no Segmento</label>
+          <select id="f_autoridade" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Alta — somos referência</option>
+            <option>Média — somos conhecidos</option>
+            <option>Em construção</option>
+            <option>Ainda não estabelecida</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 ESTRUTURA -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Estrutura Interna e Capacidade</span>
+      <span class="section-hint">Processos, ferramentas e recursos</span>
+    </div>
+    <div class="section-body">
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Possui área comercial?</label>
+          <select id="f_comercial" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Sim, estruturada</option>
+            <option>Em estruturação</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Possui área de marketing?</label>
+          <select id="f_marketing_area" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Sim, interna</option>
+            <option>Terceirizado / Agência</option>
+            <option>Em estruturação</option>
+            <option>Não</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Usa CRM?</label>
+          <select id="f_crm" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Sim — uso ativamente</option>
+            <option>Sim — mas pouco usado</option>
+            <option>Não, uso planilha</option>
+            <option>Não uso nada</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Processos documentados?</label>
+          <select id="f_processos" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Sim, bem documentados</option>
+            <option>Parcialmente</option>
+            <option>Não</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Ferramentas e sistemas em uso</label>
+        <span class="field-hint">Liste as principais ferramentas digitais, plataformas ou sistemas.</span>
+        <textarea id="f_ferramentas" rows="3" placeholder="Ex: Notion, HubSpot, Google Workspace, Slack..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Orçamento disponível para estratégia (mensal)</label>
+        <select id="f_orcamento" onchange="updateProgress()">
+          <option value="">Selecione...</option>
+          <option>Até R$ 2.000</option>
+          <option>R$ 2.000 – R$ 5.000</option>
+          <option>R$ 5.000 – R$ 10.000</option>
+          <option>R$ 10.000 – R$ 25.000</option>
+          <option>R$ 25.000+</option>
+          <option>A definir conforme proposta</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 HISTÓRICO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Histórico Estratégico</span>
+      <span class="section-hint">O que foi tentado e o que não repetir</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Já contratou consultoria ou serviço estratégico antes?</label>
+        <span class="field-hint">Se sim, como foi a experiência? O que funcionou e o que não funcionou?</span>
+        <textarea id="f_historico" rows="4" placeholder="Descreva a experiência anterior..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">O que já foi tentado para resolver o problema atual?</label>
+        <span class="field-hint">Que ações ou estratégias foram implementadas? Qual foi o resultado?</span>
+        <textarea id="f_tentativas" rows="4" placeholder="O que tentou e qual foi o resultado..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">O que você NÃO quer repetir?</label>
+        <span class="field-hint">Abordagens, estilos de trabalho ou tipos de solução que quer evitar.</span>
+        <textarea id="f_naorepetir" rows="3" placeholder="Seja direto..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 EXPECTATIVAS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Expectativas e Forma de Trabalho</span>
+      <span class="section-hint">Definição de sucesso e ritmo da parceria</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">O que você espera nos primeiros 90 dias? <span class="req">*</span></label>
+        <span class="field-hint">Quais resultados concretos representariam um começo de sucesso?</span>
+        <textarea id="f_expectativas" rows="4" placeholder="Seja específico e realista..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Como você define o sucesso desta parceria?</label>
+        <span class="field-hint">Se tudo correr bem, como estará a empresa daqui a 12 meses?</span>
+        <textarea id="f_sucesso" rows="3" placeholder="Descreva o cenário de sucesso..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Frequência de Reuniões</label>
+          <select id="f_reunioes" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Semanal</option>
+            <option>Quinzenal</option>
+            <option>Mensal</option>
+            <option>Conforme demanda</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Canal de Comunicação</label>
+          <select id="f_canal" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>WhatsApp</option>
+            <option>E-mail</option>
+            <option>Slack / Teams</option>
+            <option>Plataforma de gestão</option>
+            <option>Indiferente</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field-group">
+          <label class="field-label">Tomador de Decisão Final</label>
+          <select id="f_decisor" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Eu mesmo</option>
+            <option>Sócio(s)</option>
+            <option>Diretoria</option>
+            <option>Conselho</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Autonomia para a Vhalen</label>
+          <select id="f_autonomia" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Alta — confio e deixo executar</option>
+            <option>Média — valido decisões importantes</option>
+            <option>Baixa — aprovo tudo antes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 DIAGNÓSTICO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Autodiagnóstico — Maturidade Estratégica</span>
+      <span class="section-hint">Avalie de 1 a 5 cada dimensão</span>
+    </div>
+    <div class="section-body">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;font-style:italic;line-height:1.7;">Avalie de 1 (muito fraco) a 5 (muito forte) cada dimensão abaixo. Seja honesto — este mapeamento orienta toda a abordagem estratégica da Vhalen.</p>
+      <table class="rating-table">
+        <thead>
+          <tr>
+            <th>Dimensão</th>
+            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+          </tr>
+        </thead>
+        <tbody id="ratingBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 09 OBSERVAÇÕES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">Observações Finais</span>
+      <span class="section-hint">Contexto adicional e informações relevantes</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Informações confidenciais ou sensíveis</label>
+        <span class="field-hint">Há algo importante que devemos saber antes de começar? Contexto interno, situação delicada ou restrição?</span>
+        <textarea id="f_confidencial" rows="4" placeholder="Compartilhe com segurança..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Prazos ou compromissos externos</label>
+        <span class="field-hint">Algum lançamento, evento ou vencimento que devemos considerar no planejamento?</span>
+        <textarea id="f_prazos" rows="3" placeholder="Ex: lançamento em abril, renovação de contrato..." oninput="updateProgress()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Espaço livre — contexto adicional</label>
+        <span class="field-hint">Adicione qualquer informação que julgue relevante e que não foi contemplada acima.</span>
+        <textarea id="f_extra" rows="5" placeholder="Qualquer contexto adicional..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <p class="submit-note">Ao submeter, você dá início à construção de uma direção estratégica sólida.<br/>Um PDF completo com suas respostas será gerado automaticamente.</p>
+    <button class="btn-primary" onclick="submitForm()">
+      <span>Gerar PDF e Finalizar</span>
+      <span style="font-size:18px; font-weight:300;">→</span>
+    </button>
+  </div>
+
+</main>
+
+<!-- SUCCESS -->
+<div class="success-screen" id="successScreen">
+  <div class="success-ring">✓</div>
+  <div class="success-title">Onboarding Concluído</div>
+  <div class="success-line"></div>
+  <p class="success-sub">Seu briefing estratégico foi gerado com sucesso. Em breve a Vhalen Company entrará em contato para dar início ao trabalho.</p>
+  <button class="btn-primary" onclick="downloadAgain()">Baixar PDF novamente</button>
+</div>
+
+<script>
+const ratings = {};
+const ratingDimensions = [
+  "Clareza de estratégia e direção",
+  "Força do posicionamento de mercado",
+  "Qualidade dos processos internos",
+  "Performance comercial e de vendas",
+  "Presença e autoridade digital",
+  "Cultura organizacional e equipe",
+  "Uso de tecnologia e dados",
+  "Capacidade financeira de crescimento",
+];
+
+const tbody = document.getElementById('ratingBody');
+ratingDimensions.forEach((dim, di) => {
+  ratings[di] = 0;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${dim}</td>` + [1,2,3,4,5].map(n =>
+    `<td><div class="stars"><div class="star" onclick="setRating(${di},${n},this)" data-dim="${di}" data-val="${n}">${n}</div></div></td>`
+  ).join('');
+  tbody.appendChild(tr);
+});
+
+function setRating(dim, val, el) {
+  ratings[dim] = val;
+  document.querySelectorAll(`.star[data-dim="${dim}"]`).forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+  });
+  updateProgress();
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('input[type="text"], input[type="email"], select, textarea');
+  let filled = 0;
+  all.forEach(el => { if (el.value && el.value.trim()) filled++; });
+  const ratingFilled = Object.values(ratings).filter(v => v > 0).length;
+  const total = all.length + ratingDimensions.length;
+  const pct = Math.round(((filled + ratingFilled) / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? (el.value.trim() || '—') : '—';
+}
+
+function getChecked(groupId) {
+  const items = document.querySelectorAll(`#${groupId} .check-item.selected`);
+  if (!items.length) return '—';
+  return Array.from(items).map(i => i.textContent.trim()).join(', ');
+}
+
+function getRatingLabel(val) {
+  return ['—','Muito fraco','Fraco','Médio','Forte','Muito forte'][val] || '—';
+}
+
+let lastPdfDoc = null, lastPdfName = '';
+
+function submitForm() {
+  const required = ['f_nome','f_responsavel','f_segmento','f_oqueefaz','f_icp','f_desafio','f_objetivos','f_expectativas'];
+  const labels = {
+    f_nome: 'Nome / Razão Social', f_responsavel: 'Nome do Responsável',
+    f_segmento: 'Segmento', f_oqueefaz: 'O que a empresa faz',
+    f_icp: 'Público-Alvo', f_desafio: 'Principal desafio',
+    f_objetivos: 'Objetivos', f_expectativas: 'Expectativas 90 dias'
+  };
+  const missing = required.filter(id => !document.getElementById(id)?.value.trim());
+  if (missing.length) {
+    alert('Preencha os campos obrigatórios antes de continuar:\n\n' + missing.map(id => '• ' + labels[id]).join('\n'));
+    return;
+  }
+  generatePDF();
+}
+
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, ml = 18, mr = 18, cw = W - ml - mr;
+  let y = 0;
+
+  const NAVY = [13,27,42], STEEL = [74,127,165], STEEL_L = [107,157,192];
+  const WHITE_C = [255,255,255], SURFACE = [244,246,247], TEXT = [13,27,42];
+  const MUTED = [107,139,164], FAINT = [160,180,196], BORDER = [200,216,228];
+
+  function checkPage(needed = 18) {
+    if (y + needed > 276) { doc.addPage(); y = 18; }
+  }
+
+  // HEADER
+  doc.setFillColor(...NAVY);
+  doc.rect(0, 0, W, 38, 'F');
+  doc.setFillColor(...STEEL);
+  doc.rect(0, 38, W, 1.5, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18); doc.setTextColor(...WHITE_C);
+  doc.text('Vhalen Company', ml, 16);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(7); doc.setTextColor(...STEEL_L);
+  doc.text('STRATEGIC INTELLIGENCE', ml, 22);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(12); doc.setTextColor(...SURFACE);
+  doc.text('ONBOARDING ESTRATÉGICO', ml, 32);
+  const d = new Date();
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(7); doc.setTextColor(...MUTED);
+  doc.text(d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}), W - mr, 32, {align:'right'});
+
+  y = 48;
+
+  function sectionHeader(num, title) {
+    checkPage(16);
+    doc.setFillColor(...NAVY);
+    doc.rect(ml - 2, y, cw + 4, 9, 'F');
+    doc.setFillColor(...STEEL);
+    doc.rect(ml - 2, y + 9, cw + 4, 1, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7); doc.setTextColor(...STEEL_L);
+    doc.text(num, ml + 1, y + 6);
+    doc.setFontSize(9); doc.setTextColor(...WHITE_C);
+    doc.text(title.toUpperCase(), ml + 14, y + 6);
+    y += 14;
+  }
+
+  function field(label, value) {
+    checkPage(16);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7); doc.setTextColor(...MUTED);
+    doc.text(label.toUpperCase(), ml, y);
+    y += 4;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9); doc.setTextColor(...TEXT);
+    const lines = doc.splitTextToSize(value || '—', cw);
+    lines.forEach(line => { checkPage(6); doc.text(line, ml, y); y += 5; });
+    y += 3;
+  }
+
+  function fieldRow(pairs) {
+    checkPage(16);
+    const colW = cw / pairs.length;
+    const startY = y;
+    pairs.forEach((pair, i) => {
+      const x = ml + i * colW;
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(7); doc.setTextColor(...MUTED);
+      doc.text(pair[0].toUpperCase(), x, startY);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9); doc.setTextColor(...TEXT);
+      doc.text(pair[1] || '—', x, startY + 5);
+    });
+    y = startY + 13;
+  }
+
+  sectionHeader('01', 'Identificação do Cliente');
+  fieldRow([['Nome / Razão Social', getVal('f_nome')], ['Responsável', getVal('f_responsavel')]]);
+  fieldRow([['Cargo', getVal('f_cargo')], ['E-mail', getVal('f_email')]]);
+  fieldRow([['Segmento', getVal('f_segmento')], ['Porte', getVal('f_porte')]]);
+  fieldRow([['Colaboradores', getVal('f_colaboradores')], ['Tempo de Mercado', getVal('f_tempo')]]);
+  fieldRow([['Localização', getVal('f_local')], ['Website', getVal('f_site')]]);
+
+  sectionHeader('02', 'Contexto e Posicionamento');
+  field('O que a empresa faz', getVal('f_oqueefaz'));
+  field('Diferencial Competitivo', getVal('f_diferencial'));
+  field('Proposta de Valor Central', getVal('f_proposta'));
+  fieldRow([['Público-Alvo (ICP)', getVal('f_icp')], ['Ticket Médio', getVal('f_ticket')]]);
+  fieldRow([['Modelo de Receita', getVal('f_receita')], ['Ciclo de Venda', getVal('f_ciclo')]]);
+
+  sectionHeader('03', 'Desafios e Objetivos');
+  field('Principal Desafio Atual', getVal('f_desafio'));
+  field('Gatilho para Buscar Suporte Estratégico', getVal('f_gatilho'));
+  field('Objetivos para os Próximos 12 Meses', getVal('f_objetivos'));
+  field('Principais Gargalos Identificados', getChecked('gargalos'));
+
+  sectionHeader('04', 'Mercado e Competitividade');
+  field('Principais Concorrentes Diretos', getVal('f_concorrentes'));
+  field('Canais de Aquisição Ativos', getVal('f_canais'));
+  fieldRow([['Presença Digital', getVal('f_presenca')], ['Autoridade no Segmento', getVal('f_autoridade')]]);
+
+  sectionHeader('05', 'Estrutura Interna e Capacidade');
+  fieldRow([['Área Comercial', getVal('f_comercial')], ['Área de Marketing', getVal('f_marketing_area')]]);
+  fieldRow([['Uso de CRM', getVal('f_crm')], ['Processos Documentados', getVal('f_processos')]]);
+  field('Ferramentas e Sistemas em Uso', getVal('f_ferramentas'));
+  field('Orçamento Mensal para Estratégia', getVal('f_orcamento'));
+
+  sectionHeader('06', 'Histórico Estratégico');
+  field('Experiências Anteriores com Consultoria', getVal('f_historico'));
+  field('O que Já Foi Tentado e Resultado', getVal('f_tentativas'));
+  field('O que Não Quer Repetir', getVal('f_naorepetir'));
+
+  sectionHeader('07', 'Expectativas e Forma de Trabalho');
+  field('Expectativas para os Primeiros 90 Dias', getVal('f_expectativas'));
+  field('Definição de Sucesso da Parceria', getVal('f_sucesso'));
+  fieldRow([['Frequência de Reuniões', getVal('f_reunioes')], ['Canal de Comunicação', getVal('f_canal')]]);
+  fieldRow([['Tomador de Decisão', getVal('f_decisor')], ['Autonomia para Vhalen', getVal('f_autonomia')]]);
+
+  sectionHeader('08', 'Autodiagnóstico — Maturidade Estratégica');
+  checkPage(10);
+  doc.setFillColor(...NAVY);
+  doc.rect(ml, y, cw, 7, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7); doc.setTextColor(...STEEL_L);
+  doc.text('DIMENSÃO', ml + 2, y + 4.8);
+  doc.text('AVALIAÇÃO', ml + cw - 2, y + 4.8, {align:'right'});
+  y += 9;
+  ratingDimensions.forEach((dim, i) => {
+    checkPage(8);
+    if (i % 2 === 0) { doc.setFillColor(...SURFACE); doc.rect(ml, y - 1, cw, 7, 'F'); }
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8); doc.setTextColor(...TEXT);
+    doc.text(dim, ml + 2, y + 4);
+    const val = ratings[i] || 0;
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(...STEEL);
+    doc.text(`${val > 0 ? val + '/5' : '—'}  ${getRatingLabel(val)}`, ml + cw - 2, y + 4, {align:'right'});
+    y += 8;
+  });
+  y += 4;
+
+  sectionHeader('09', 'Observações Finais');
+  field('Informações Confidenciais ou Sensíveis', getVal('f_confidencial'));
+  field('Prazos ou Compromissos Externos', getVal('f_prazos'));
+  field('Contexto Adicional', getVal('f_extra'));
+
+  checkPage(20);
+  y += 6;
+  doc.setFillColor(...NAVY);
+  doc.rect(ml - 2, y, cw + 4, 18, 'F');
+  doc.setFillColor(...STEEL);
+  doc.rect(ml - 2, y, cw + 4, 1, 'F');
+  doc.setFont('helvetica','italic');
+  doc.setFontSize(8); doc.setTextColor(...MUTED);
+  doc.text('Ao preencher este documento, você dá início à construção de uma direção estratégica sólida.', W/2, y + 8, {align:'center'});
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(9); doc.setTextColor(...STEEL_L);
+  doc.text('VHALEN COMPANY  •  Strategic Intelligence', W/2, y + 14, {align:'center'});
+
+  const filename = `Vhalen_Onboarding_${getVal('f_nome').replace(/[^a-zA-Z0-9]/g,'_')}.pdf`;
+  lastPdfDoc = doc; lastPdfName = filename;
+  doc.save(filename);
+  document.getElementById('successScreen').classList.add('visible');
+}
+
+function downloadAgain() {
+  if (lastPdfDoc) lastPdfDoc.save(lastPdfName);
+}
+
+updateProgress();
+</script>
+</body>
+</html>
