@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vhalen Company — Onboarding Estratégico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --navy:        #0D1B2A;
+  --navy2:       #112236;
+  --steel:       #4A7FA5;
+  --steel-light: #6B9DC0;
+  --steel-pale:  #A8C4D8;
+  --surface:     #F4F6F7;
+  --surface2:    #E8EDF1;
+  --white:       #FFFFFF;
+  --text:        #0D1B2A;
+  --text-mid:    #2C4A62;
+  --text-muted:  #6B8BA4;
+  --text-faint:  #A0B4C4;
+  --border:      #C8D8E4;
+  --border2:     #B0C4D4;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+
+body {
+background: var(–navy);
+font-family: ‘Outfit’, sans-serif;
+font-weight: 300;
+color: var(–white);
+height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* ── HEADER ── */
+.top-bar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 20px 40px;
+border-bottom: 1px solid rgba(74,127,165,0.2);
+flex-shrink: 0;
+}
+.brand {
+display: flex;
+align-items: baseline;
+gap: 10px;
+}
+.brand-name {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 20px;
+font-weight: 600;
+color: var(–white);
+letter-spacing: 0.04em;
+}
+.brand-name span { color: var(–steel-light); }
+.brand-tag {
+font-family: ‘DM Mono’, monospace;
+font-size: 9px;
+letter-spacing: 0.2em;
+color: var(–text-muted);
+text-transform: uppercase;
+}
+.step-counter {
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+color: var(–text-muted);
+letter-spacing: 0.1em;
+}
+.step-counter span { color: var(–steel-light); font-weight: 500; }
+
+/* ── PROGRESS ── */
+.progress-bar {
+height: 2px;
+background: rgba(255,255,255,0.06);
+flex-shrink: 0;
+position: relative;
+}
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–steel), var(–steel-light));
+transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── STAGE AREA ── */
+.stage {
+flex: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 40px;
+overflow: hidden;
+position: relative;
+}
+
+/* ── CARD ── */
+.card {
+width: 100%;
+max-width: 620px;
+animation: cardIn 0.45s cubic-bezier(0.4,0,0.2,1) both;
+}
+@keyframes cardIn {
+from { opacity: 0; transform: translateY(28px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cardOut {
+from { opacity: 1; transform: translateY(0); }
+to   { opacity: 0; transform: translateY(-24px); }
+}
+.card.leaving {
+animation: cardOut 0.3s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.card-eyebrow {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.25em;
+color: var(–steel);
+text-transform: uppercase;
+margin-bottom: 16px;
+}
+.card-question {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(22px, 4vw, 32px);
+font-weight: 300;
+color: var(–white);
+line-height: 1.35;
+margin-bottom: 10px;
+}
+.card-hint {
+font-size: 13px;
+color: var(–text-muted);
+margin-bottom: 32px;
+line-height: 1.6;
+font-style: italic;
+}
+
+/* ── INPUTS ── */
+input[type=“text”],
+input[type=“email”],
+textarea,
+select {
+width: 100%;
+background: rgba(255,255,255,0.04);
+border: none;
+border-bottom: 1px solid rgba(74,127,165,0.4);
+color: var(–white);
+font-family: ‘Outfit’, sans-serif;
+font-size: 16px;
+font-weight: 300;
+padding: 14px 4px;
+outline: none;
+transition: border-color 0.2s;
+border-radius: 0;
+-webkit-appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+border-bottom-color: var(–steel-light);
+}
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+textarea { resize: none; min-height: 120px; line-height: 1.7; }
+select { cursor: pointer; }
+select option { background: var(–navy2); color: var(–white); }
+
+.input-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 24px;
+}
+
+/* ── CHOICE CARDS ── */
+.choices {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+.choice {
+display: flex;
+align-items: center;
+gap: 14px;
+padding: 14px 18px;
+border: 1px solid rgba(74,127,165,0.2);
+background: rgba(74,127,165,0.04);
+cursor: pointer;
+transition: all 0.15s;
+font-size: 14px;
+color: rgba(255,255,255,0.7);
+user-select: none;
+border-radius: 2px;
+}
+.choice:hover {
+border-color: rgba(74,127,165,0.5);
+background: rgba(74,127,165,0.08);
+color: var(–white);
+}
+.choice.selected {
+border-color: var(–steel);
+background: rgba(74,127,165,0.15);
+color: var(–white);
+}
+.choice-dot {
+width: 18px; height: 18px;
+border: 1.5px solid rgba(74,127,165,0.4);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; transition: all 0.15s;
+}
+.choice.selected .choice-dot {
+background: var(–steel);
+border-color: var(–steel);
+}
+.choice-check { font-size: 9px; color: var(–white); display: none; }
+.choice.selected .choice-check { display: block; }
+
+/* Multi select */
+.choice.multi .choice-dot { border-radius: 3px; }
+
+/* ── RATING STARS ── */
+.rating-wrap { display: flex; flex-direction: column; gap: 14px; }
+.rating-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+}
+.rating-label { font-size: 13px; color: rgba(255,255,255,0.7); flex: 1; }
+.stars { display: flex; gap: 6px; }
+.star {
+width: 36px; height: 36px;
+border: 1px solid rgba(74,127,165,0.3);
+display: flex; align-items: center; justify-content: center;
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+color: var(–text-muted);
+cursor: pointer;
+transition: all 0.15s;
+user-select: none;
+border-radius: 2px;
+}
+.star:hover { border-color: var(–steel); color: var(–steel-light); }
+.star.active { background: var(–steel); border-color: var(–steel); color: var(–white); }
+
+/* ── NAV ── */
+.nav {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 20px 40px;
+border-top: 1px solid rgba(74,127,165,0.15);
+flex-shrink: 0;
+}
+.btn-back {
+display: flex; align-items: center; gap: 8px;
+background: none; border: none;
+font-family: ‘Outfit’, sans-serif;
+font-size: 12px; letter-spacing: 0.1em;
+color: var(–text-muted);
+cursor: pointer; transition: color 0.2s;
+text-transform: uppercase;
+padding: 10px 0;
+}
+.btn-back:hover { color: var(–white); }
+.btn-back:disabled { opacity: 0.2; cursor: default; }
+
+.btn-next {
+display: flex; align-items: center; gap: 10px;
+background: var(–steel);
+border: none;
+padding: 14px 32px;
+font-family: ‘Outfit’, sans-serif;
+font-size: 12px; font-weight: 600;
+letter-spacing: 0.15em; text-transform: uppercase;
+color: var(–white);
+cursor: pointer; transition: all 0.2s;
+border-radius: 2px;
+}
+.btn-next:hover { background: var(–steel-light); transform: translateX(2px); }
+.btn-next:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+/* ── SUCCESS ── */
+.success {
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+height: 100%;
+padding: 40px;
+animation: cardIn 0.5s ease both;
+}
+.success.visible { display: flex; }
+.success-ring {
+width: 72px; height: 72px;
+border: 1px solid var(–steel);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+margin: 0 auto 28px;
+font-size: 24px; color: var(–steel-light);
+position: relative;
+}
+.success-ring::after {
+content:’’;
+position:absolute; inset:-8px;
+border:1px solid rgba(74,127,165,0.15);
+border-radius:50%;
+}
+.success h2 {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 36px; font-weight: 300;
+margin-bottom: 12px;
+}
+.success p {
+font-size: 14px; color: var(–text-muted);
+max-width: 380px; line-height: 1.8;
+margin-bottom: 36px;
+}
+.btn-pdf {
+display: inline-flex; align-items: center; gap: 10px;
+background: var(–steel); color: var(–white);
+border: none; padding: 16px 40px;
+font-family: ‘Outfit’, sans-serif;
+font-size: 11px; font-weight: 600;
+letter-spacing: 0.2em; text-transform: uppercase;
+cursor: pointer; transition: all 0.2s; border-radius: 2px;
+}
+.btn-pdf:hover { background: var(–steel-light); }
+
+/* ── WELCOME ── */
+.welcome {
+text-align: center;
+}
+.welcome .card-question { font-size: clamp(28px,5vw,42px); margin-bottom: 16px; }
+.welcome-divider {
+width: 48px; height: 1px;
+background: var(–steel);
+margin: 20px auto;
+}
+
+@media(max-width:600px){
+.top-bar { padding: 16px 20px; }
+.stage { padding: 24px 20px; align-items: flex-start; padding-top: 40px; }
+.nav { padding: 16px 20px; }
+.input-grid { grid-template-columns: 1fr; }
+.rating-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+.stars .star { width: 32px; height: 32px; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="brand">
+    <div class="brand-name">Vhalen <span>Company</span></div>
+    <div class="brand-tag">Strategic Intelligence</div>
+  </div>
+  <div class="step-counter">Etapa <span id="stepNum">1</span> de <span id="totalSteps">—</span></div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<div class="stage" id="stage">
+  <!-- cards rendered by JS -->
+</div>
+
+<div class="nav">
+  <button class="btn-back" id="btnBack" onclick="goBack()" disabled>← Voltar</button>
+  <button class="btn-next" id="btnNext" onclick="goNext()">Continuar →</button>
+</div>
+
+<script>
+const ratings = {};
+
+const steps = [
+  // ── BOAS-VINDAS ──
+  {
+    id: 'welcome',
+    type: 'welcome',
+    eyebrow: 'Bem-vindo',
+    question: 'Vamos construir sua estratégia juntos.',
+    hint: 'Este onboarding leva cerca de 8 minutos. Suas respostas orientam toda a nossa atuação — seja direto e honesto.',
+  },
+
+  // ── BLOCO 1: IDENTIFICAÇÃO ──
+  {
+    id: 'identificacao',
+    type: 'grid2',
+    eyebrow: '01 · Identificação',
+    question: 'Como você se identifica?',
+    hint: 'Dados básicos para contextualizar nossa parceria.',
+    fields: [
+      { id: 'f_nome',         label: 'Nome / Razão Social',  placeholder: 'Nome da empresa',       required: true },
+      { id: 'f_responsavel',  label: 'Seu Nome',             placeholder: 'Nome completo',         required: true },
+      { id: 'f_cargo',        label: 'Cargo / Posição',      placeholder: 'Seu cargo',             required: false },
+      { id: 'f_email',        label: 'E-mail',               placeholder: 'contato@empresa.com',   required: false },
+    ]
+  },
+  {
+    id: 'empresa',
+    type: 'grid2',
+    eyebrow: '01 · Identificação',
+    question: 'Conte um pouco sobre a empresa.',
+    hint: 'Informações que nos ajudam a entender o contexto do negócio.',
+    fields: [
+      { id: 'f_segmento',     label: 'Segmento / Setor',     placeholder: 'Ex: Tecnologia, Saúde...', required: true },
+      { id: 'f_local',        label: 'Localização / Atuação',placeholder: 'Cidade, Estado ou âmbito', required: false },
+      { id: 'f_site',         label: 'Website / Redes',      placeholder: 'Links principais',         required: false },
+      { id: 'f_tempo',        label: 'Tempo de Mercado',     placeholder: 'Ex: 3 anos',               required: false },
+    ]
+  },
+
+  // ── BLOCO 2: CONTEXTO ──
+  {
+    id: 'oqueefaz',
+    type: 'textarea',
+    eyebrow: '02 · Contexto',
+    question: 'O que a empresa faz?',
+    hint: 'Descreva o negócio, produto ou serviço principal com suas próprias palavras — sem jargão.',
+    fieldId: 'f_oqueefaz',
+    placeholder: 'Seja direto e objetivo...',
+    required: true,
+  },
+  {
+    id: 'diferencial',
+    type: 'textarea',
+    eyebrow: '02 · Contexto',
+    question: 'Qual é o seu diferencial real no mercado?',
+    hint: 'O que você entrega que o concorrente não entrega — ou não entrega tão bem?',
+    fieldId: 'f_diferencial',
+    placeholder: 'Seja específico. Evite respostas genéricas como "qualidade" ou "atendimento".',
+    required: false,
+  },
+  {
+    id: 'icp',
+    type: 'textarea',
+    eyebrow: '02 · Contexto',
+    question: 'Quem é o seu cliente ideal?',
+    hint: 'Descreva o perfil, segmento, cargo ou situação do cliente que você mais quer atender.',
+    fieldId: 'f_icp',
+    placeholder: 'Perfil, cargo, segmento, situação...',
+    required: true,
+  },
+
+  // ── BLOCO 3: DESAFIOS ──
+  {
+    id: 'desafio',
+    type: 'textarea',
+    eyebrow: '03 · Desafios',
+    question: 'Qual é o maior desafio da empresa hoje?',
+    hint: 'O problema central que mais limita o crescimento ou trava a operação. Seja honesto.',
+    fieldId: 'f_desafio',
+    placeholder: 'Descreva com clareza e precisão...',
+    required: true,
+  },
+  {
+    id: 'gargalos',
+    type: 'multicheck',
+    eyebrow: '03 · Desafios',
+    question: 'Onde estão os maiores gargalos?',
+    hint: 'Selecione todas as áreas que limitam o crescimento hoje.',
+    fieldId: 'f_gargalos',
+    options: [
+      'Estratégia e direção',
+      'Geração de leads e vendas',
+      'Processos internos',
+      'Cultura e gestão de equipe',
+      'Marketing e posicionamento',
+      'Tecnologia e ferramentas',
+      'Financeiro e escalabilidade',
+    ]
+  },
+  {
+    id: 'objetivos',
+    type: 'textarea',
+    eyebrow: '03 · Desafios',
+    question: 'Quais são os 3 objetivos prioritários para os próximos 12 meses?',
+    hint: 'Os resultados mais importantes que precisam acontecer. Seja concreto.',
+    fieldId: 'f_objetivos',
+    placeholder: '1.\n2.\n3.',
+    required: true,
+  },
+
+  // ── BLOCO 4: ESTRUTURA INTERNA ──
+  {
+    id: 'estrutura',
+    type: 'select4',
+    eyebrow: '04 · Estrutura Interna',
+    question: 'Como está a estrutura operacional hoje?',
+    hint: 'Uma visão rápida das principais áreas da empresa.',
+    fields: [
+      { id: 'f_comercial',  label: 'Área Comercial',    options: ['','Sim, estruturada','Em estruturação','Não existe'] },
+      { id: 'f_marketing',  label: 'Área de Marketing', options: ['','Sim, interna','Terceirizado','Em estruturação','Não existe'] },
+      { id: 'f_crm',        label: 'Uso de CRM',        options: ['','Sim — uso ativamente','Sim — mas pouco usado','Não, uso planilha','Não uso nada'] },
+      { id: 'f_processos',  label: 'Processos Documentados', options: ['','Sim, bem documentados','Parcialmente','Não'] },
+    ]
+  },
+  {
+    id: 'ferramentas',
+    type: 'textarea',
+    eyebrow: '04 · Estrutura Interna',
+    question: 'Quais ferramentas e sistemas a empresa usa hoje?',
+    hint: 'Liste as principais ferramentas digitais, plataformas ou sistemas em uso.',
+    fieldId: 'f_ferramentas',
+    placeholder: 'Ex: Notion, HubSpot, Google Workspace, Slack...',
+    required: false,
+  },
+
+  // ── BLOCO 5: HISTÓRICO ──
+  {
+    id: 'historico',
+    type: 'textarea',
+    eyebrow: '05 · Histórico',
+    question: 'O que já foi tentado para resolver o problema atual?',
+    hint: 'Que ações, estratégias ou contratações foram feitas? Qual foi o resultado?',
+    fieldId: 'f_historico',
+    placeholder: 'O que tentou e o que resultou...',
+    required: false,
+  },
+  {
+    id: 'naorepetir',
+    type: 'textarea',
+    eyebrow: '05 · Histórico',
+    question: 'O que você não quer repetir?',
+    hint: 'Abordagens, estilos de trabalho ou tipos de solução que quer evitar desta vez.',
+    fieldId: 'f_naorepetir',
+    placeholder: 'Seja direto...',
+    required: false,
+  },
+
+  // ── BLOCO 6: EXPECTATIVAS ──
+  {
+    id: 'expectativas',
+    type: 'textarea',
+    eyebrow: '06 · Expectativas',
+    question: 'O que você espera nos primeiros 90 dias da parceria?',
+    hint: 'Quais resultados concretos representariam um começo de sucesso para você?',
+    fieldId: 'f_expectativas',
+    placeholder: 'Seja específico e realista...',
+    required: true,
+  },
+  {
+    id: 'sucesso',
+    type: 'textarea',
+    eyebrow: '06 · Expectativas',
+    question: 'Como você define o sucesso desta parceria?',
+    hint: 'Se tudo correr bem, como estará a empresa daqui a 12 meses?',
+    fieldId: 'f_sucesso',
+    placeholder: 'Descreva o cenário ideal...',
+    required: false,
+  },
+  {
+    id: 'trabalho',
+    type: 'select4',
+    eyebrow: '06 · Expectativas',
+    question: 'Como prefere trabalhar?',
+    hint: 'Alinhamento sobre ritmo e comunicação.',
+    fields: [
+      { id: 'f_reunioes',   label: 'Frequência de Reuniões', options: ['','Semanal','Quinzenal','Mensal','Conforme demanda'] },
+      { id: 'f_canal',      label: 'Canal de Comunicação',   options: ['','WhatsApp','E-mail','Slack / Teams','Indiferente'] },
+      { id: 'f_decisor',    label: 'Tomador de Decisão',     options: ['','Eu mesmo','Sócio(s)','Diretoria','Conselho'] },
+      { id: 'f_autonomia',  label: 'Autonomia para Vhalen',  options: ['','Alta — confio e deixo executar','Média — valido decisões','Baixa — aprovo tudo'] },
+    ]
+  },
+
+  // ── BLOCO 7: RELACIONAMENTO ──
+  {
+    id: 'relacionamento1',
+    type: 'single-choice',
+    eyebrow: '07 · Relacionamento',
+    question: 'Como você prefere receber atualizações e relatórios de progresso?',
+    hint: 'Isso nos ajuda a estruturar a comunicação de forma que funcione melhor para você.',
+    fieldId: 'f_relatorio',
+    options: [
+      'Relatório escrito detalhado por e-mail',
+      'Resumo rápido em áudio ou vídeo',
+      'Dashboard visual atualizado em tempo real',
+      'Reunião de alinhamento quinzenal',
+      'Mensagem direta e objetiva pelo WhatsApp',
+    ]
+  },
+  {
+    id: 'relacionamento2',
+    type: 'single-choice',
+    eyebrow: '07 · Relacionamento',
+    question: 'Como você lida com feedback e ajustes de rota?',
+    hint: 'Entender seu estilo nos ajuda a construir uma parceria mais fluida e eficaz.',
+    fieldId: 'f_feedback',
+    options: [
+      'Prefiro receber direto, sem rodeios',
+      'Gosto de contexto antes de ouvir o feedback',
+      'Prefiro discutir em reunião, não por escrito',
+      'Estou aberto a qualquer formato',
+    ]
+  },
+  {
+    id: 'relacionamento3',
+    type: 'single-choice',
+    eyebrow: '07 · Relacionamento',
+    question: 'Qual é o seu maior receio nesta parceria?',
+    hint: 'Transparência aqui nos permite trabalhar para evitar ativamente esses pontos.',
+    fieldId: 'f_receio',
+    options: [
+      'Falta de resultados concretos',
+      'Comunicação ruim ou falta de alinhamento',
+      'Não ter tempo para implementar o que for planejado',
+      'Resistência interna da equipe às mudanças',
+      'Outro — vou detalhar nas observações',
+    ]
+  },
+
+  // ── BLOCO 8: DIAGNÓSTICO ──
+  {
+    id: 'diagnostico',
+    type: 'rating',
+    eyebrow: '08 · Autodiagnóstico',
+    question: 'Avalie a maturidade estratégica da empresa.',
+    hint: 'De 1 (muito fraco) a 5 (muito forte). Seja honesto — isso orienta toda a abordagem.',
+    dimensions: [
+      { id: 'r0', label: 'Clareza de estratégia e direção' },
+      { id: 'r1', label: 'Força do posicionamento de mercado' },
+      { id: 'r2', label: 'Qualidade dos processos internos' },
+      { id: 'r3', label: 'Performance comercial e de vendas' },
+      { id: 'r4', label: 'Presença e autoridade digital' },
+      { id: 'r5', label: 'Cultura organizacional e equipe' },
+      { id: 'r6', label: 'Uso de tecnologia e dados' },
+    ]
+  },
+
+  // ── BLOCO 9: OBSERVAÇÕES ──
+  {
+    id: 'observacoes',
+    type: 'textarea',
+    eyebrow: '09 · Observações Finais',
+    question: 'Algo mais que devemos saber?',
+    hint: 'Informações confidenciais, prazos críticos, contexto adicional ou qualquer coisa que julgue importante.',
+    fieldId: 'f_extra',
+    placeholder: 'Espaço livre — seja à vontade...',
+    required: false,
+  },
+];
+
+let current = 0;
+const total = steps.length;
+document.getElementById('totalSteps').textContent = total;
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function renderStep(idx) {
+  const s = steps[idx];
+  const stage = document.getElementById('stage');
+  document.getElementById('stepNum').textContent = idx + 1;
+  const pct = (idx / (total - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('btnBack').disabled = idx === 0;
+  document.getElementById('btnNext').textContent = idx === total - 1 ? 'Finalizar →' : 'Continuar →';
+
+  let html = '';
+
+  if (s.type === 'welcome') {
+    html = `
+      <div class="card welcome">
+        <div class="card-eyebrow">${s.eyebrow}</div>
+        <div class="card-question">${s.question}</div>
+        <div class="welcome-divider"></div>
+        <div class="card-hint">${s.hint}</div>
+      </div>`;
+  } else if (s.type === 'textarea') {
+    const val = getVal(s.fieldId) || '';
+    html = `
+      <div class="card">
+        <div class="card-eyebrow">${s.eyebrow}</div>
+        <div class="card-question">${s.question}</div>
+        <div class="card-hint">${s.hint}</div>
+        <textarea id="${s.fieldId}" placeholder="${s.placeholder}" rows="5">${val}</textarea>
+
+```
+  </div>`;
+```
+
+} else if (s.type === ‘grid2’) {
+const fields = s.fields.map(f => {
+const val = getVal(f.id) || ‘’;
+return `<div class="field-group" style="display:flex;flex-direction:column;gap:8px;"> <label style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);font-family:'DM Mono',monospace;">${f.label}${f.required ? ' <span style="color:var(--steel)">*</span>' : ''}</label> <input type="text" id="${f.id}" placeholder="${f.placeholder}" value="${val}"/> </div>`;
+}).join(’’);
+html = ` <div class="card"> <div class="card-eyebrow">${s.eyebrow}</div> <div class="card-question">${s.question}</div> <div class="card-hint">${s.hint}</div> <div class="input-grid">${fields}</div> </div>`;
+} else if (s.type === ‘select4’) {
+const fields = s.fields.map(f => {
+const val = getVal(f.id) || ‘’;
+const opts = f.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o || 'Selecione...'}</option>`).join(’’);
+return `<div style="display:flex;flex-direction:column;gap:8px;"> <label style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);font-family:'DM Mono',monospace;">${f.label}</label> <select id="${f.id}">${opts}</select> </div>`;
+}).join(’’);
+html = ` <div class="card"> <div class="card-eyebrow">${s.eyebrow}</div> <div class="card-question">${s.question}</div> <div class="card-hint">${s.hint}</div> <div class="input-grid">${fields}</div> </div>`;
+} else if (s.type === ‘multicheck’) {
+const saved = window[’*mc*’ + s.fieldId] || [];
+const items = s.options.map(o => {
+const sel = saved.includes(o) ? ‘selected’ : ‘’;
+return `<div class="choice multi ${sel}" onclick="toggleMulti(this,'${s.fieldId}')"> <div class="choice-dot"><span class="choice-check">✓</span></div> ${o} </div>`;
+}).join(’’);
+html = ` <div class="card"> <div class="card-eyebrow">${s.eyebrow}</div> <div class="card-question">${s.question}</div> <div class="card-hint">${s.hint}</div> <div class="choices">${items}</div> </div>`;
+} else if (s.type === ‘single-choice’) {
+const saved = window[’*sc*’ + s.fieldId] || ‘’;
+const items = s.options.map(o => {
+const sel = saved === o ? ‘selected’ : ‘’;
+return `<div class="choice ${sel}" onclick="selectSingle(this,'${s.fieldId}')"> <div class="choice-dot"><span class="choice-check">✓</span></div> ${o} </div>`;
+}).join(’’);
+html = ` <div class="card"> <div class="card-eyebrow">${s.eyebrow}</div> <div class="card-question">${s.question}</div> <div class="card-hint">${s.hint}</div> <div class="choices">${items}</div> </div>`;
+} else if (s.type === ‘rating’) {
+const rows = s.dimensions.map(d => {
+const val = ratings[d.id] || 0;
+const stars = [1,2,3,4,5].map(n =>
+`<div class="star ${val >= n ? 'active' : ''}" onclick="setRating('${d.id}',${n},this)" data-dim="${d.id}" data-val="${n}">${n}</div>`
+).join(’’);
+return `<div class="rating-row"> <div class="rating-label">${d.label}</div> <div class="stars">${stars}</div> </div>`;
+}).join(’’);
+html = ` <div class="card"> <div class="card-eyebrow">${s.eyebrow}</div> <div class="card-question">${s.question}</div> <div class="card-hint">${s.hint}</div> <div class="rating-wrap">${rows}</div> </div>`;
+}
+
+stage.innerHTML = html;
+// focus first input
+const first = stage.querySelector(‘input,textarea’);
+if (first) setTimeout(() => first.focus(), 100);
+}
+
+function toggleMulti(el, fieldId) {
+el.classList.toggle(‘selected’);
+if (!window[’*mc*’ + fieldId]) window[’*mc*’ + fieldId] = [];
+const label = el.textContent.trim();
+const arr = window[’*mc*’ + fieldId];
+const idx = arr.indexOf(label);
+if (idx > -1) arr.splice(idx, 1); else arr.push(label);
+}
+
+function selectSingle(el, fieldId) {
+document.querySelectorAll(’.choice:not(.multi)’).forEach(c => c.classList.remove(‘selected’));
+el.classList.add(‘selected’);
+window[’*sc*’ + fieldId] = el.textContent.trim();
+}
+
+function setRating(dim, val, el) {
+ratings[dim] = val;
+document.querySelectorAll(`.star[data-dim="${dim}"]`).forEach(s => {
+s.classList.toggle(‘active’, parseInt(s.dataset.val) <= val);
+});
+}
+
+function validate(idx) {
+const s = steps[idx];
+if (s.type === ‘welcome’) return true;
+if (s.type === ‘textarea’ && s.required) return !!getVal(s.fieldId);
+if (s.type === ‘grid2’) return s.fields.filter(f => f.required).every(f => !!getVal(f.id));
+return true;
+}
+
+function goNext() {
+if (!validate(current)) {
+// shake
+const card = document.querySelector(’.card’);
+if (card) {
+card.style.animation = ‘none’;
+card.style.transform = ‘translateX(8px)’;
+setTimeout(() => { card.style.transform = ‘translateX(-8px)’; }, 60);
+setTimeout(() => { card.style.transform = ‘translateX(4px)’; }, 120);
+setTimeout(() => { card.style.transform = ‘translateX(0)’; }, 180);
+}
+return;
+}
+if (current === total - 1) { generatePDF(); return; }
+
+const card = document.querySelector(’.card’);
+if (card) {
+card.classList.add(‘leaving’);
+setTimeout(() => { current++; renderStep(current); }, 280);
+} else { current++; renderStep(current); }
+}
+
+function goBack() {
+if (current === 0) return;
+const card = document.querySelector(’.card’);
+if (card) {
+card.style.animation = ‘cardOut 0.25s ease both’;
+setTimeout(() => { current–; renderStep(current); }, 220);
+} else { current–; renderStep(current); }
+}
+
+// keyboard
+document.addEventListener(‘keydown’, e => {
+if (e.key === ‘Enter’ && e.ctrlKey) goNext();
+});
+
+// ── PDF ──
+function fv(id) {
+const el = document.getElementById(id);
+if (el) return el.value.trim() || ‘—’;
+return window[’*sc*’ + id] || window[’*mc*’ + id]?.join(’, ‘) || ‘—’;
+}
+function mc(key) { return (window[’*mc*’ + key] || []).join(’, ‘) || ‘—’; }
+function sc(key) { return window[’*sc*’ + key] || ‘—’; }
+function rv(key) { return ratings[key] ? `${ratings[key]}/5` : ‘—’; }
+function rl(key) { const v = ratings[key]||0; return [’—’,‘Muito fraco’,‘Fraco’,‘Médio’,‘Forte’,‘Muito forte’][v]; }
+
+function generatePDF() {
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF({ orientation: ‘portrait’, unit: ‘mm’, format: ‘a4’ });
+const W = 210, ml = 18, cw = 174;
+let y = 0;
+
+const NAVY=[13,27,42], STEEL=[74,127,165], STEEL_L=[107,157,192];
+const WHITE_C=[255,255,255], SURF=[244,246,247], TEXT=[13,27,42], MUTED=[107,139,164];
+
+function chk(n=16){ if(y+n>276){doc.addPage();y=18;} }
+
+// HEADER
+doc.setFillColor(…NAVY); doc.rect(0,0,W,38,‘F’);
+doc.setFillColor(…STEEL); doc.rect(0,38,W,1.5,‘F’);
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(18); doc.setTextColor(…WHITE_C);
+doc.text(‘Vhalen Company’, ml, 16);
+doc.setFont(‘helvetica’,‘normal’); doc.setFontSize(7); doc.setTextColor(…STEEL_L);
+doc.text(‘STRATEGIC INTELLIGENCE’, ml, 22);
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(12); doc.setTextColor(…SURF);
+doc.text(‘ONBOARDING ESTRATÉGICO — PÓS-FECHAMENTO’, ml, 32);
+const d = new Date();
+doc.setFont(‘helvetica’,‘normal’); doc.setFontSize(7); doc.setTextColor(…MUTED);
+doc.text(d.toLocaleDateString(‘pt-BR’,{day:‘2-digit’,month:‘long’,year:‘numeric’}), W-ml, 32, {align:‘right’});
+y = 48;
+
+function sec(num, title) {
+chk(14);
+doc.setFillColor(…NAVY); doc.rect(ml-2,y,cw+4,9,‘F’);
+doc.setFillColor(…STEEL); doc.rect(ml-2,y+9,cw+4,1,‘F’);
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(7); doc.setTextColor(…STEEL_L);
+doc.text(num, ml+1, y+6);
+doc.setFontSize(9); doc.setTextColor(…WHITE_C);
+doc.text(title.toUpperCase(), ml+14, y+6);
+y+=14;
+}
+
+function field(label, value) {
+chk(14);
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(7); doc.setTextColor(…MUTED);
+doc.text(label.toUpperCase(), ml, y); y+=4;
+doc.setFont(‘helvetica’,‘normal’); doc.setFontSize(9); doc.setTextColor(…TEXT);
+doc.splitTextToSize(value||’—’, cw).forEach(l => { chk(6); doc.text(l, ml, y); y+=5; });
+y+=3;
+}
+
+function row2(a, b) {
+chk(14);
+const half = cw/2;
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(7); doc.setTextColor(…MUTED);
+doc.text(a[0].toUpperCase(), ml, y);
+doc.text(b[0].toUpperCase(), ml+half, y);
+doc.setFont(‘helvetica’,‘normal’); doc.setFontSize(9); doc.setTextColor(…TEXT);
+doc.text(a[1]||’—’, ml, y+5);
+doc.text(b[1]||’—’, ml+half, y+5);
+y+=14;
+}
+
+sec(‘01’,‘Identificação do Cliente’);
+row2([‘Nome / Razão Social’, fv(‘f_nome’)], [‘Responsável’, fv(‘f_responsavel’)]);
+row2([‘Cargo’, fv(‘f_cargo’)], [‘E-mail’, fv(‘f_email’)]);
+row2([‘Segmento’, fv(‘f_segmento’)], [‘Localização’, fv(‘f_local’)]);
+row2([‘Website’, fv(‘f_site’)], [‘Tempo de Mercado’, fv(‘f_tempo’)]);
+
+sec(‘02’,‘Contexto e Posicionamento’);
+field(‘O que a empresa faz’, fv(‘f_oqueefaz’));
+field(‘Diferencial Competitivo’, fv(‘f_diferencial’));
+field(‘Cliente Ideal (ICP)’, fv(‘f_icp’));
+
+sec(‘03’,‘Desafios e Objetivos’);
+field(‘Principal Desafio Atual’, fv(‘f_desafio’));
+field(‘Principais Gargalos’, mc(‘f_gargalos’));
+field(‘Objetivos para os Próximos 12 Meses’, fv(‘f_objetivos’));
+
+sec(‘04’,‘Estrutura Interna’);
+row2([‘Área Comercial’, fv(‘f_comercial’)], [‘Área de Marketing’, fv(‘f_marketing’)]);
+row2([‘Uso de CRM’, fv(‘f_crm’)], [‘Processos Documentados’, fv(‘f_processos’)]);
+field(‘Ferramentas e Sistemas em Uso’, fv(‘f_ferramentas’));
+
+sec(‘05’,‘Histórico Estratégico’);
+field(‘O que Já Foi Tentado’, fv(‘f_historico’));
+field(‘O que Não Quer Repetir’, fv(‘f_naorepetir’));
+
+sec(‘06’,‘Expectativas e Forma de Trabalho’);
+field(‘Expectativas — Primeiros 90 Dias’, fv(‘f_expectativas’));
+field(‘Definição de Sucesso’, fv(‘f_sucesso’));
+row2([‘Frequência de Reuniões’, fv(‘f_reunioes’)], [‘Canal de Comunicação’, fv(‘f_canal’)]);
+row2([‘Tomador de Decisão’, fv(‘f_decisor’)], [‘Autonomia para Vhalen’, fv(‘f_autonomia’)]);
+
+sec(‘07’,‘Relacionamento com o Cliente’);
+field(‘Formato de Atualizações Preferido’, sc(‘f_relatorio’));
+field(‘Estilo de Feedback’, sc(‘f_feedback’));
+field(‘Maior Receio na Parceria’, sc(‘f_receio’));
+
+sec(‘08’,‘Autodiagnóstico — Maturidade Estratégica’);
+chk(10);
+doc.setFillColor(…NAVY); doc.rect(ml,y,cw,7,‘F’);
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(7); doc.setTextColor(…STEEL_L);
+doc.text(‘DIMENSÃO’, ml+2, y+5); doc.text(‘AVALIAÇÃO’, ml+cw-2, y+5, {align:‘right’});
+y+=9;
+const dims = [
+{id:‘r0’,label:‘Clareza de estratégia e direção’},
+{id:‘r1’,label:‘Força do posicionamento de mercado’},
+{id:‘r2’,label:‘Qualidade dos processos internos’},
+{id:‘r3’,label:‘Performance comercial e de vendas’},
+{id:‘r4’,label:‘Presença e autoridade digital’},
+{id:‘r5’,label:‘Cultura organizacional e equipe’},
+{id:‘r6’,label:‘Uso de tecnologia e dados’},
+];
+dims.forEach((d,i) => {
+chk(8);
+if(i%2===0){doc.setFillColor(…SURF);doc.rect(ml,y-1,cw,7,‘F’);}
+doc.setFont(‘helvetica’,‘normal’); doc.setFontSize(8); doc.setTextColor(…TEXT);
+doc.text(d.label, ml+2, y+4);
+doc.setFont(‘helvetica’,‘bold’); doc.setTextColor(…STEEL);
+doc.text(`${rv(d.id)}  ${rl(d.id)}`, ml+cw-2, y+4, {align:‘right’});
+y+=8;
+});
+y+=4;
+
+sec(‘09’,‘Observações Finais’);
+field(‘Contexto Adicional’, fv(‘f_extra’));
+
+// FOOTER
+chk(18);
+y+=6;
+doc.setFillColor(…NAVY); doc.rect(ml-2,y,cw+4,16,‘F’);
+doc.setFillColor(…STEEL); doc.rect(ml-2,y,cw+4,1,‘F’);
+doc.setFont(‘helvetica’,‘italic’); doc.setFontSize(8); doc.setTextColor(…MUTED);
+doc.text(‘Ao preencher este documento, você dá início à construção de uma direção estratégica sólida.’, W/2, y+8, {align:‘center’});
+doc.setFont(‘helvetica’,‘bold’); doc.setFontSize(9); doc.setTextColor(…STEEL_L);
+doc.text(‘VHALEN COMPANY  •  Strategic Intelligence’, W/2, y+14, {align:‘center’});
+
+const fname = `Vhalen_Onboarding_${(fv('f_nome')||'cliente').replace(/[^a-zA-Z0-9]/g,'_')}.pdf`;
+doc.save(fname);
+window._lastDoc = doc; window._lastFname = fname;
+
+// show success
+document.getElementById(‘stage’).innerHTML = ` <div class="success visible"> <div class="success-ring">✓</div> <h2>Onboarding Concluído</h2> <p>Seu briefing estratégico foi gerado com sucesso. Em breve a Vhalen Company entrará em contato para dar início ao trabalho.</p> <button class="btn-pdf" onclick="window._lastDoc.save(window._lastFname)">Baixar PDF novamente</button> </div>`;
+document.querySelector(’.nav’).style.display = ‘none’;
+document.querySelector(’.top-bar’).style.display = ‘none’;
+document.querySelector(’.progress-bar’).style.display = ‘none’;
+}
+
+renderStep(0);
+</script>
+
+</body>
+</html>
