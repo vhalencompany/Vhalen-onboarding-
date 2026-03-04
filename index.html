@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Vhalen Company — Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --navy:#0D1B2A;
+  --navy2:#0A1520;
+  --steel:#4A7FA5;
+  --steel-l:#6B9DC0;
+  --steel-ll:#A8C4D8;
+  --border:rgba(74,127,165,0.18);
+  --text:#E4EEF5;
+  --muted:#6B8BA4;
+  --white:#FFFFFF;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;width:100%;overflow:hidden;}
+
+body{
+  background:var(--navy2);
+  font-family:'Outfit',sans-serif;
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  height:100dvh;
+}
+
+/* glow */
+.bg-glow{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 40% at 50% 0%, rgba(74,127,165,0.09) 0%, transparent 70%);
+}
+
+/* ═══ TOP BAR ═══ */
+.top-bar{
+  position:relative;z-index:10;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;
+  background:rgba(10,21,32,0.95);
+  border-bottom:1px solid rgba(74,127,165,0.1);
+}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand-logo{
+  width:32px;height:32px;flex-shrink:0;
+  border:1px solid var(--steel);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;
+  color:#E8F4FF;
+  background:linear-gradient(160deg,#5B90B5 0%,#2C5F80 50%,#1A3D55 100%);
+  letter-spacing:0;
+  text-shadow:
+    0 1px 0 #1a3d55,
+    0 2px 0 #163248,
+    0 3px 4px rgba(0,0,0,0.5),
+    0 0 12px rgba(107,157,192,0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    inset 0 -1px 0 rgba(0,0,0,0.3),
+    0 4px 12px rgba(0,0,0,0.4),
+    0 1px 3px rgba(74,127,165,0.3);
+}
+.brand-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:600;color:var(--white);letter-spacing:0.04em;
+}
+.brand-name span{color:var(--steel-l);}
+.brand-sep{width:1px;height:13px;background:var(--border);margin:0 2px;}
+.brand-sub{
+  font-family:'DM Mono',monospace;
+  font-size:7.5px;letter-spacing:0.16em;color:var(--muted);text-transform:uppercase;
+}
+.step-info{display:flex;align-items:center;gap:10px;}
+.block-lbl{
+  font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.14em;
+  color:var(--steel-l);text-transform:uppercase;
+  transition:all 0.3s ease;
+}
+.step-pct{
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  color:var(--steel-ll);min-width:28px;text-align:right;
+  transition:all 0.3s ease;
+}
+
+/* ═══ PROGRESS ═══ */
+.progress{
+  position:relative;z-index:10;flex-shrink:0;
+  height:2px;background:rgba(74,127,165,0.07);
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--steel),var(--steel-l));
+  transition:width 0.55s cubic-bezier(0.4,0,0.2,1);
+  position:relative;
+}
+.progress-fill::after{
+  content:'';position:absolute;right:-3px;top:50%;transform:translateY(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:var(--steel-ll);box-shadow:0 0 7px var(--steel-l);
+}
+
+/* ═══ STAGE ═══ */
+.stage{
+  flex:1;min-height:0;
+  position:relative;z-index:5;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  padding:16px 20px 8px;
+}
+
+/* ═══ CARD ═══ */
+.card{
+  width:100%;max-width:560px;
+  display:flex;flex-direction:column;
+  max-height:100%;
+}
+
+/* animations */
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes slideDown{
+  from{opacity:1;transform:translateY(0);}
+  to{opacity:0;transform:translateY(-20px);}
+}
+@keyframes slideFromRight{
+  from{opacity:0;transform:translateX(30px);}
+  to{opacity:1;transform:translateX(0);}
+}
+@keyframes slideToLeft{
+  from{opacity:1;transform:translateX(0);}
+  to{opacity:0;transform:translateX(-30px);}
+}
+@keyframes slideFromLeft{
+  from{opacity:0;transform:translateX(-30px);}
+  to{opacity:1;transform:translateX(0);}
+}
+@keyframes slideToRight{
+  from{opacity:1;transform:translateX(0);}
+  to{opacity:0;transform:translateX(30px);}
+}
+
+.card.enter-right{animation:slideFromRight 0.38s cubic-bezier(0.22,1,0.36,1) both;}
+.card.enter-left {animation:slideFromLeft  0.38s cubic-bezier(0.22,1,0.36,1) both;}
+.card.exit-left  {animation:slideToLeft    0.28s ease both;}
+.card.exit-right {animation:slideToRight   0.28s ease both;}
+
+/* eyebrow */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.22em;
+  color:var(--steel-l);text-transform:uppercase;
+  margin-bottom:10px;
+  padding:3px 10px;
+  border:1px solid rgba(74,127,165,0.12);
+  background:rgba(74,127,165,0.05);
+  width:fit-content;
+}
+.eyebrow::before{
+  content:'';width:3px;height:3px;border-radius:50%;
+  background:var(--steel);flex-shrink:0;
+}
+
+.question{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(17px,3vw,24px);
+  font-weight:300;line-height:1.3;
+  color:var(--white);margin-bottom:5px;
+}
+.hint{
+  font-size:11px;color:var(--muted);
+  margin-bottom:14px;line-height:1.55;font-style:italic;
+}
+
+/* ═══ WELCOME ═══ */
+.welcome{text-align:center;align-items:center;}
+.w-logo{
+  width:80px;height:80px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#5B90B5 0%,#2C5F80 45%,#1A3D55 100%);
+  border:1px solid rgba(107,157,192,0.5);
+  position:relative;margin-bottom:20px;flex-shrink:0;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.35),
+    0 8px 32px rgba(0,0,0,0.5),
+    0 2px 8px rgba(74,127,165,0.35),
+    0 0 24px rgba(74,127,165,0.15);
+  animation:pulse 3s ease-in-out infinite;
+}
+.w-logo::before{
+  content:'';position:absolute;inset:-6px;
+  border:1px solid rgba(74,127,165,0.15);
+}
+.w-logo::after{
+  content:'';position:absolute;inset:-12px;
+  border:1px solid rgba(74,127,165,0.07);
+}
+.w-logo-txt{
+  font-family:'Cormorant Garamond',serif;
+  font-size:52px;font-weight:600;
+  color:#E8F4FF;
+  letter-spacing:0;line-height:1;
+  text-shadow:
+    0 2px 0 #1a3d55,
+    0 4px 0 #163248,
+    0 6px 0 #112538,
+    0 8px 12px rgba(0,0,0,0.6),
+    0 0 20px rgba(107,157,192,0.5),
+    0 -1px 0 rgba(255,255,255,0.25);
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  position:relative;top:-2px;
+}
+.w-company{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(26px,6vw,38px);font-weight:300;
+  color:var(--white);letter-spacing:0.05em;margin-bottom:4px;
+}
+.w-company span{color:var(--steel-l);font-weight:600;}
+.w-tag{
+  font-family:'DM Mono',monospace;font-size:8px;
+  letter-spacing:0.28em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;
+}
+.w-line{
+  width:36px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--steel),transparent);
+  margin:0 auto 14px;
+}
+.w-desc{
+  font-size:12.5px;color:var(--muted);line-height:1.75;
+  max-width:380px;margin:0 auto 16px;
+}
+.w-desc strong{color:var(--steel-ll);font-weight:500;}
+.w-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;}
+.badge{
+  padding:4px 12px;
+  border:1px solid rgba(74,127,165,0.14);
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.12em;
+  color:var(--muted);text-transform:uppercase;border-radius:20px;
+  background:rgba(74,127,165,0.04);
+}
+
+/* ═══ INPUTS ═══ */
+.field{margin-bottom:10px;}
+.field label{
+  display:block;
+  font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.16em;
+  color:var(--muted);text-transform:uppercase;margin-bottom:5px;
+}
+.req{color:var(--steel);}
+
+input[type="text"],input[type="email"],textarea,select{
+  width:100%;
+  background:rgba(244,246,247,0.04);
+  border:1px solid rgba(74,127,165,0.17);
+  color:var(--white);
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:300;
+  padding:9px 12px;
+  outline:none;border-radius:3px;
+  transition:border-color 0.2s,background 0.2s,box-shadow 0.2s;
+  -webkit-appearance:none;
+  isolation:isolate;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--steel);
+  background:rgba(74,127,165,0.06);
+  box-shadow:0 0 0 3px rgba(74,127,165,0.08);
+}
+input::placeholder,textarea::placeholder{color:rgba(200,215,228,0.22);}
+textarea{resize:none;line-height:1.65;}
+select{cursor:pointer;}
+select option{background:#112236;color:var(--white);}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* ═══ CHOICES ═══ */
+.choices{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:calc(100dvh - 220px);}
+.choices::-webkit-scrollbar{width:3px;}
+.choices::-webkit-scrollbar-thumb{background:rgba(74,127,165,0.3);border-radius:2px;}
+
+.choice{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;
+  border:1px solid rgba(74,127,165,0.14);
+  background:rgba(74,127,165,0.03);
+  cursor:pointer;border-radius:3px;
+  font-size:12.5px;color:rgba(255,255,255,0.6);
+  transition:border-color 0.15s,background 0.15s,color 0.15s,transform 0.15s;
+  user-select:none;isolation:isolate;flex-shrink:0;
+}
+.choice:hover{border-color:rgba(74,127,165,0.38);color:rgba(255,255,255,0.9);transform:translateX(2px);}
+.choice.selected{
+  border-color:var(--steel);background:rgba(74,127,165,0.1);color:var(--white);
+  box-shadow:0 0 0 1px rgba(74,127,165,0.18);transform:translateX(2px);
+}
+.choice-dot{
+  width:16px;height:16px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid rgba(74,127,165,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;color:transparent;transition:all 0.15s;
+}
+.choice.sq .choice-dot{border-radius:3px;}
+.choice.selected .choice-dot{background:var(--steel);border-color:var(--steel);color:var(--white);}
+
+/* ═══ RATING ═══ */
+.rating-block{display:flex;flex-direction:column;gap:8px;}
+.r-row{display:flex;align-items:center;gap:10px;}
+.r-label{font-size:11.5px;color:rgba(255,255,255,0.65);flex:1;}
+.stars{display:flex;gap:4px;flex-shrink:0;}
+.star{
+  width:30px;height:30px;
+  border:1px solid rgba(74,127,165,0.18);
+  background:rgba(244,246,247,0.03);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);cursor:pointer;border-radius:3px;
+  transition:all 0.14s;isolation:isolate;
+}
+.star:hover{border-color:var(--steel);color:var(--steel-l);transform:scale(1.08);}
+.star.on{background:var(--steel);border-color:var(--steel);color:var(--white);}
+
+/* ═══ NAV ═══ */
+.nav{
+  position:relative;z-index:10;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:2px 24px;
+  background:rgba(10,21,32,0.92);
+  border-top:1px solid rgba(74,127,165,0.08);
+}
+.btn-back{
+  background:none;border:none;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;
+  color:var(--muted);cursor:pointer;transition:color 0.2s;text-transform:uppercase;padding:4px 0;
+}
+.btn-back:hover:not(:disabled){color:var(--steel-ll);}
+.btn-back:disabled{opacity:0.18;cursor:default;}
+
+.btn-next{
+  display:flex;align-items:center;gap:8px;
+  background:var(--steel);border:none;border-radius:3px;
+  padding:10px 28px;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--white);cursor:pointer;
+  transition:all 0.18s;
+  box-shadow:0 3px 14px rgba(74,127,165,0.22);
+}
+.btn-next:hover{background:var(--steel-l);transform:translateY(-1px);box-shadow:0 5px 18px rgba(74,127,165,0.32);}
+.btn-next:active{transform:translateY(0);}
+
+/* ═══ SUCCESS ═══ */
+.success-screen{
+  display:none;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  position:fixed;inset:0;z-index:100;
+  background:var(--navy2);padding:32px;
+}
+.success-screen.show{display:flex;}
+
+.success-visual{
+  position:relative;width:140px;height:140px;
+  margin:0 auto 24px;
+  animation:popIn 0.65s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);}}
+.ring{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(74,127,165,0.18);
+  animation:ringPulse 3s ease-in-out infinite;
+}
+.ring:nth-child(1){inset:0;animation-delay:0s;}
+.ring:nth-child(2){inset:14px;border-color:rgba(74,127,165,0.28);animation-delay:0.5s;}
+.ring:nth-child(3){inset:28px;border-color:rgba(74,127,165,0.45);animation-delay:1s;}
+@keyframes ringPulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+.success-core{
+  position:absolute;inset:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--steel),var(--steel-l));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--white);
+  box-shadow:0 0 36px rgba(74,127,165,0.5);
+  animation:glowPulse 2.5s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 24px rgba(74,127,165,0.4);}50%{box-shadow:0 0 44px rgba(74,127,165,0.7);}}
+
+.success-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,5vw,34px);font-weight:300;
+  color:var(--white);margin-bottom:6px;
+  animation:fadeUp 0.5s ease 0.4s both;
+}
+.success-client{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--steel-l);letter-spacing:0.14em;margin-bottom:16px;
+  animation:fadeUp 0.5s ease 0.5s both;
+}
+.success-line{
+  width:36px;height:1px;background:var(--steel);
+  margin:0 auto 16px;box-shadow:0 0 5px var(--steel);
+  animation:fadeUp 0.5s ease 0.52s both;
+}
+.success-msg{
+  font-size:12.5px;color:var(--muted);
+  max-width:340px;line-height:1.8;margin-bottom:24px;
+  animation:fadeUp 0.5s ease 0.58s both;
+}
+.btn-pdf{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--steel);border:none;border-radius:3px;
+  padding:13px 36px;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--white);cursor:pointer;transition:all 0.2s;
+  box-shadow:0 4px 18px rgba(74,127,165,0.3);
+  animation:fadeUp 0.5s ease 0.65s both;
+}
+.btn-pdf:hover{background:var(--steel-l);transform:translateY(-2px);box-shadow:0 7px 24px rgba(74,127,165,0.42);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:480px){
+  .top-bar,.nav{padding:10px 16px;}
+  .stage{padding:12px 14px;}
+  .grid2{grid-template-columns:1fr;}
+  .brand-sep,.brand-sub,.step-lbl{display:none;}
+  .question{font-size:16px;}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div class="top-bar" id="topBar">
+  <div class="brand">
+    <div class="brand-logo">V</div>
+    <div class="brand-name">Vhalen <span>Company</span></div>
+    <div class="brand-sep"></div>
+    <div class="brand-sub">Strategic Intelligence</div>
+  </div>
+  <div class="step-info">
+    <div class="block-lbl" id="blockLbl"></div>
+    <div class="step-pct" id="stepPct">0%</div>
+  </div>
+</div>
+
+<div class="progress" id="progressBar">
+  <div class="progress-fill" id="pFill" style="width:0%"></div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<div class="nav" id="navBar">
+  <button class="btn-back" id="btnBack" onclick="goBack()" disabled>← Voltar</button>
+  <button class="btn-next" id="btnNext" onclick="goNext()">Continuar →</button>
+</div>
+
+<div class="success-screen" id="successScreen"></div>
+
+<script>
+const R={},MC={},SC={},F={};
+
+const STEPS=[
+  {type:'welcome'},
+  {type:'grid2',ey:'01 · Identificação',q:'Como você se identifica?',h:'Dados do responsável e da empresa.',
+   inputs:[{id:'nome',lb:'Nome / Razão Social',ph:'Nome da empresa',req:true},{id:'resp',lb:'Seu Nome',ph:'Nome completo',req:true},{id:'cargo',lb:'Cargo / Posição',ph:'Seu cargo'},{id:'email',lb:'E-mail',ph:'contato@empresa.com'}]},
+  {type:'grid2',ey:'01 · Identificação',q:'Sobre a empresa.',h:'Contexto rápido do negócio.',
+   inputs:[{id:'seg',lb:'Segmento / Setor',ph:'Ex: Tecnologia, Saúde...',req:true},{id:'tempo',lb:'Tempo de Mercado',ph:'Ex: 3 anos'},{id:'local',lb:'Localização',ph:'Cidade, Estado ou âmbito'},{id:'site',lb:'Website / Redes',ph:'Links principais'}]},
+  {type:'textarea',ey:'02 · Contexto',q:'O que a empresa faz?',h:'Com suas próprias palavras — sem jargão.',id:'oqueefaz',ph:'Seja direto e objetivo...',req:true,rows:4},
+  {type:'textarea',ey:'03 · Desafios',q:'Qual é o maior desafio hoje?',h:'O problema que mais limita o crescimento ou trava a operação.',id:'desafio',ph:'Descreva com clareza...',req:true,rows:4},
+  {type:'multicheck',ey:'03 · Desafios',q:'Onde estão os maiores gargalos?',h:'Selecione todos que se aplicam.',id:'gargalos',
+   opts:['Estratégia e direção','Geração de leads e vendas','Processos internos','Cultura e equipe','Marketing e posicionamento','Tecnologia e ferramentas','Financeiro e escalabilidade']},
+  {type:'textarea',ey:'03 · Desafios',q:'3 objetivos para os próximos 12 meses.',h:'Os resultados mais importantes. Seja concreto.',id:'obj',ph:'1.\n2.\n3.',req:true,rows:4},
+  {type:'select4',ey:'04 · Estrutura',q:'Como está a estrutura operacional?',h:'Visão rápida das principais áreas.',
+   sels:[{id:'com',lb:'Área Comercial',opts:['','Sim, estruturada','Em estruturação','Não existe']},{id:'mkt',lb:'Área de Marketing',opts:['','Sim, interna','Terceirizado','Em estruturação','Não existe']},{id:'crm',lb:'Uso de CRM',opts:['','Sim — ativamente','Sim — pouco usado','Uso planilha','Não uso nada']},{id:'proc',lb:'Processos Documentados',opts:['','Sim, bem documentados','Parcialmente','Não']}]},
+  {type:'multicheck',ey:'04 · Estrutura',q:'Quais ferramentas usa hoje?',h:'Selecione todas que se aplicam.',id:'tools',
+   opts:['Google Workspace','Notion / Confluence','Slack / Teams','HubSpot / CRM próprio','Trello / Asana / Monday','Planilhas Excel / Sheets','Instagram / Meta Ads','Google Ads','Nenhuma relevante']},
+  {type:'single',ey:'05 · Histórico',q:'Já contratou consultoria estratégica antes?',h:'Nos ajuda a entender o ponto de partida.',id:'hist',
+   opts:['Sim — foi positivo','Sim — não trouxe resultado','Sim — experiência mista','Não, esta é a primeira vez']},
+  {type:'multicheck',ey:'05 · Histórico',q:'O que não quer repetir?',h:'Selecione o que quer evitar desta vez.',id:'norep',
+   opts:['Falta de resultados concretos','Planejamento sem execução','Falta de comunicação','Solução genérica','Muito relatório, pouca ação','Mudanças muito lentas']},
+  {type:'textarea',ey:'06 · Expectativas',q:'O que espera nos primeiros 90 dias?',h:'Quais resultados representariam um começo de sucesso?',id:'exp',ph:'Seja específico e realista...',req:true,rows:4},
+  {type:'select4',ey:'06 · Expectativas',q:'Como prefere trabalhar?',h:'Alinhamento sobre ritmo e comunicação.',
+   sels:[{id:'reu',lb:'Frequência de Reuniões',opts:['','Semanal','Quinzenal','Mensal','Conforme demanda']},{id:'can',lb:'Canal de Comunicação',opts:['','WhatsApp','E-mail','Slack / Teams','Indiferente']},{id:'dec',lb:'Tomador de Decisão',opts:['','Eu mesmo','Sócio(s)','Diretoria','Conselho']},{id:'aut',lb:'Autonomia para Vhalen',opts:['','Alta — deixo executar','Média — valido decisões','Baixa — aprovo tudo']}]},
+  {type:'single',ey:'07 · Relacionamento',q:'Como prefere receber atualizações?',h:'Estruturamos a comunicação do seu jeito.',id:'rel',
+   opts:['Relatório escrito por e-mail','Resumo em áudio ou vídeo','Dashboard visual','Reunião quinzenal de alinhamento','Mensagem direta pelo WhatsApp']},
+  {type:'single',ey:'07 · Relacionamento',q:'Como lida com feedback e ajustes?',h:'Entender seu estilo torna a parceria mais fluida.',id:'feed',
+   opts:['Direto, sem rodeios','Prefiro contexto antes do feedback','Prefiro discutir em reunião','Aberto a qualquer formato']},
+  {type:'single',ey:'07 · Relacionamento',q:'Qual é seu maior receio nesta parceria?',h:'Isso nos permite trabalhar ativamente para evitar.',id:'receio',
+   opts:['Falta de resultados concretos','Comunicação ruim','Falta de tempo para implementar','Resistência interna da equipe','Outro — detalharei nas observações']},
+  {type:'rating',ey:'08 · Autodiagnóstico',q:'Avalie a maturidade estratégica.',h:'De 1 (fraco) a 5 (forte). Seja honesto.',
+   dims:[{id:'r0',l:'Clareza de estratégia e direção'},{id:'r1',l:'Posicionamento de mercado'},{id:'r2',l:'Qualidade dos processos'},{id:'r3',l:'Performance comercial'},{id:'r4',l:'Presença e autoridade digital'},{id:'r5',l:'Cultura e equipe'},{id:'r6',l:'Tecnologia e dados'}]},
+  {type:'textarea',ey:'09 · Observações',q:'Algo mais que devemos saber?',h:'Prazos, informações confidenciais ou contexto adicional.',id:'extra',ph:'Espaço livre...',req:false,rows:4},
+];
+
+const T=STEPS.length;
+let cur=0;
+let inReview=false;
+
+function updHeader(idx){
+  const s=STEPS[idx];
+  const pct=idx===0?0:Math.round((idx/(T-1))*100);
+  const bl=document.getElementById('blockLbl');
+  const pp=document.getElementById('stepPct');
+  if(bl)bl.textContent=s.ey||'Início';
+  if(pp)pp.textContent=pct+'%';
+}
+
+function saveCur(){
+  const s=STEPS[cur];
+  if(s.type==='textarea'){const el=document.getElementById('fi_'+s.id);if(el)F[s.id]=el.value;}
+  else if(s.type==='grid2'){s.inputs.forEach(f=>{const el=document.getElementById('fi_'+f.id);if(el)F[f.id]=el.value;});}
+  else if(s.type==='select4'){s.sels.forEach(f=>{const el=document.getElementById('fi_'+f.id);if(el)F[f.id]=el.value;});}
+}
+
+function renderStep(idx,dir='right'){
+  const s=STEPS[idx];
+  document.getElementById('pFill').style.width=(idx===0?0:(idx/(T-1))*100)+'%';
+  document.getElementById('btnBack').disabled=idx===0;
+  document.getElementById('btnNext').textContent=idx===T-1?'Finalizar ✓':'Continuar →';
+  updHeader(idx);
+
+  let inner='';
+  const dirClass=dir==='right'?'enter-right':'enter-left';
+
+  if(s.type==='welcome'){
+    inner=`<div class="card welcome ${dirClass}">
+      <div class="w-logo"><div class="w-logo-txt">V</div></div>
+      <div class="w-company">Vhalen <span>Company</span></div>
+      <div class="w-tag">Strategic Intelligence</div>
+      <div class="w-line"></div>
+      <p class="w-desc">Bem-vindo ao seu <strong>Onboarding Estratégico</strong>.<br/>
+      Criado para que possamos entender profundamente seu negócio e entregar um trabalho <strong>preciso e orientado a resultados</strong>.</p>
+      <div class="w-badges">
+        <div class="badge">~5 minutos</div>
+        <div class="badge">9 blocos</div>
+        <div class="badge">PDF ao final</div>
+        <div class="badge">Pós-fechamento</div>
+      </div>
+    </div>`;
+  }
+  else if(s.type==='textarea'){
+    const v=F[s.id]||'';
+    const greet=cur>3&&(F['nome']||F['resp'])?`<div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--steel);margin-bottom:8px;">${getGreeting()}</div>`:'';
+    inner=`<div class="card ${dirClass}">
+      <div class="eyebrow">${s.ey}</div>
+      ${greet}
+      <div class="question">${s.q}</div>
+      <div class="hint">${s.h}</div>
+      <div class="field"><textarea id="fi_${s.id}" placeholder="${s.ph}" rows="${s.rows||4}" style="width:100%">${v}</textarea></div>
+    </div>`;
+  }
+  else if(s.type==='grid2'){
+    const ins=s.inputs.map(f=>{const v=F[f.id]||'';return`<div class="field"><label>${f.lb}${f.req?` <span class="req">*</span>`:''}</label><input type="text" id="fi_${f.id}" placeholder="${f.ph||''}" value="${v}"/></div>`;}).join('');
+    inner=`<div class="card ${dirClass}">
+      <div class="eyebrow">${s.ey}</div>
+      <div class="question">${s.q}</div>
+      <div class="hint">${s.h}</div>
+      <div class="grid2">${ins}</div>
+    </div>`;
+  }
+  else if(s.type==='select4'){
+    const sels=s.sels.map(f=>{const v=F[f.id]||'';const opts=f.opts.map(o=>`<option value="${o}"${v===o?' selected':''}>${o||'Selecione...'}</option>`).join('');return`<div class="field"><label>${f.lb}</label><select id="fi_${f.id}">${opts}</select></div>`;}).join('');
+    inner=`<div class="card ${dirClass}">
+      <div class="eyebrow">${s.ey}</div>
+      <div class="question">${s.q}</div>
+      <div class="hint">${s.h}</div>
+      <div class="grid2">${sels}</div>
+    </div>`;
+  }
+  else if(s.type==='multicheck'){
+    const saved=MC[s.id]||[];
+    const items=s.opts.map(o=>{const sel=saved.includes(o)?'selected':'';return`<div class="choice sq ${sel}" onclick="tMC('${s.id}',this)"><div class="choice-dot">✓</div>${o}</div>`;}).join('');
+    inner=`<div class="card ${dirClass}">
+      <div class="eyebrow">${s.ey}</div>
+      <div class="question">${s.q}</div>
+      <div class="hint">${s.h}</div>
+      <div class="choices">${items}</div>
+    </div>`;
+  }
+  else if(s.type==='single'){
+    const saved=SC[s.id]||'';
+    const items=s.opts.map(o=>{const sel=saved===o?'selected':'';return`<div class="choice ${sel}" onclick="tSC('${s.id}',this)"><div class="choice-dot">✓</div>${o}</div>`;}).join('');
+    inner=`<div class="card ${dirClass}">
+      <div class="eyebrow">${s.ey}</div>
+      <div class="question">${s.q}</div>
+      <div class="hint">${s.h}</div>
+      <div class="choices">${items}</div>
+    </div>`;
+  }
+  else if(s.type==='rating'){
+    const rows=s.dims.map(d=>{const v=R[d.id]||0;const stars=[1,2,3,4,5].map(n=>`<div class="star${v>=n?' on':''}" data-dim="${d.id}" data-val="${n}" onclick="setR('${d.id}',${n})">${n}</div>`).join('');return`<div class="r-row"><div class="r-label">${d.l}</div><div class="stars">${stars}</div></div>`;}).join('');
+    inner=`<div class="card ${dirClass}">
+      <div class="eyebrow">${s.ey}</div>
+      <div class="question">${s.q}</div>
+      <div class="hint">${s.h}</div>
+      <div class="rating-block">${rows}</div>
+    </div>`;
+  }
+
+  document.getElementById('stage').innerHTML=inner;
+  const fi=document.querySelector('#stage input,#stage textarea');
+  if(fi)setTimeout(()=>fi.focus(),60);
+}
+
+function tMC(id,el){
+  el.classList.toggle('selected');
+  if(!MC[id])MC[id]=[];
+  const lb=el.textContent.trim();
+  const i=MC[id].indexOf(lb);
+  if(i>-1)MC[id].splice(i,1);else MC[id].push(lb);
+}
+function tSC(id,el){
+  document.querySelectorAll('#stage .choice').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  SC[id]=el.textContent.trim();
+  // auto-advance only if not on the last step and not in review
+  if(!inReview && cur < T-1){
+    setTimeout(()=>goNext(), 420);
+  }
+}
+
+function getGreeting(){
+  const nm=F['nome']||F['resp']||'';
+  return nm?`Olá, ${nm.split(' ')[0]}.`:'';
+}
+function setR(dim,val){
+  R[dim]=val;
+  document.querySelectorAll(`.star[data-dim="${dim}"]`).forEach(s=>s.classList.toggle('on',parseInt(s.dataset.val)<=val));
+}
+
+function validate(){
+  const s=STEPS[cur];
+  if(s.type==='welcome')return true;
+  if(s.type==='textarea'&&s.req){const el=document.getElementById('fi_'+s.id);return el&&el.value.trim().length>0;}
+  if(s.type==='grid2')return s.inputs.filter(f=>f.req).every(f=>{const el=document.getElementById('fi_'+f.id);return el&&el.value.trim().length>0;});
+  return true;
+}
+
+function shake(){
+  const c=document.querySelector('#stage .card');if(!c)return;
+  const seq=[10,-10,6,-6,3,0];
+  seq.forEach((x,i)=>setTimeout(()=>{c.style.transform=`translateX(${x}px)`;},i*60));
+  setTimeout(()=>{c.style.transform='';},seq.length*60+40);
+}
+
+function transition(nextIdx,dir){
+  const c=document.querySelector('#stage .card');
+  if(!c){renderStep(nextIdx,dir);return;}
+  c.className=c.className.replace(/enter-\w+|exit-\w+/g,'').trim();
+  c.classList.add(dir==='right'?'exit-left':'exit-right');
+  setTimeout(()=>{cur=nextIdx;renderStep(cur,dir);},260);
+}
+
+function goNext(){
+  if(!validate()){shake();return;}
+  saveCur();
+  if(cur===T-1){showReview();return;}
+  transition(cur+1,'right');
+}
+
+function showReview(){
+  inReview=true;
+  const nm=F['nome']||F['resp']||'Cliente';
+  const stage=document.getElementById('stage');
+  const btnNext=document.getElementById('btnNext');
+  const btnBack=document.getElementById('btnBack');
+
+  btnNext.textContent='Confirmar e Gerar PDF ✓';
+  btnNext.onclick=()=>{ inReview=false; buildPDF(); };
+
+  btnBack.disabled=false;
+  btnBack.onclick=()=>{
+    inReview=false;
+    btnNext.textContent='Continuar →';
+    btnNext.onclick=()=>goNext();
+    btnBack.onclick=()=>goBack();
+    renderStep(cur,'left');
+  };
+
+  const trunc=(str,n)=>{const s=str||'—'; return s.length>n?s.substring(0,n)+'…':s;};
+  const items=[
+    ['Empresa',       F['nome']||'—'],
+    ['Responsável',   F['resp']||'—'],
+    ['Segmento',      F['seg']||'—'],
+    ['Principal Desafio', trunc(F['desafio'],90)],
+    ['Objetivos',     trunc(F['obj'],90)],
+    ['Expectativas',  trunc(F['exp'],90)],
+  ].map(([l,v])=>`
+    <div style="padding:9px 0;border-bottom:1px solid rgba(74,127,165,0.1);display:flex;flex-direction:column;gap:3px;">
+      <span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.16em;color:var(--muted);text-transform:uppercase;">${l}</span>
+      <span style="font-size:13px;color:var(--text);line-height:1.5;">${v}</span>
+    </div>`).join('');
+
+  stage.innerHTML=`<div class="card enter-right">
+    <div class="eyebrow">Revisão Final</div>
+    <div class="question">Tudo certo, ${nm.split(' ')[0]}?</div>
+    <div class="hint" style="margin-bottom:14px;">Confirme suas respostas principais antes de gerar o PDF.</div>
+    <div style="overflow-y:auto;max-height:calc(100dvh - 260px);">${items}</div>
+  </div>`;
+}
+function goBack(){
+  if(cur===0)return;
+  saveCur();
+  transition(cur-1,'left');
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))goNext();});
+
+// PDF
+function gf(id){return F[id]||'—';}
+function gmc(id){return(MC[id]||[]).join(', ')||'—';}
+function gsc(id){return SC[id]||'—';}
+function grv(id){return R[id]?`${R[id]}/5`:'—';}
+function grl(id){return['—','Muito fraco','Fraco','Médio','Forte','Muito forte'][R[id]||0];}
+let _doc,_name;
+
+function buildPDF(){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  const W=210,ml=18,cw=174;let y=0;
+  const NV=[13,27,42],ST=[74,127,165],SL=[107,157,192],WH=[255,255,255],SF=[244,246,247],TX=[13,27,42],MU=[107,139,164];
+  function chk(n=16){if(y+n>276){doc.addPage();y=18;}}
+  doc.setFillColor(...NV);doc.rect(0,0,W,40,'F');
+  doc.setFillColor(...ST);doc.rect(0,40,W,1.5,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(...WH);doc.text('Vhalen Company',ml,17);
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...SL);doc.text('STRATEGIC INTELLIGENCE',ml,23);
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(...SF);doc.text('ONBOARDING ESTRATÉGICO — PÓS-FECHAMENTO',ml,33);
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...MU);
+  doc.text(new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}),W-ml,33,{align:'right'});
+  y=50;
+  function sec(n,t){chk(14);doc.setFillColor(...NV);doc.rect(ml-2,y,cw+4,9,'F');doc.setFillColor(...ST);doc.rect(ml-2,y+9,cw+4,1,'F');doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...SL);doc.text(n,ml+1,y+6);doc.setFontSize(9);doc.setTextColor(...WH);doc.text(t.toUpperCase(),ml+14,y+6);y+=14;}
+  function fld(l,v){chk(14);doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...MU);doc.text(l.toUpperCase(),ml,y);y+=4;doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...TX);doc.splitTextToSize(v||'—',cw).forEach(ln=>{chk(6);doc.text(ln,ml,y);y+=5;});y+=3;}
+  function r2(a,b){chk(14);const h=cw/2;doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...MU);doc.text(a[0].toUpperCase(),ml,y);doc.text(b[0].toUpperCase(),ml+h,y);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...TX);doc.text(a[1]||'—',ml,y+5);doc.text(b[1]||'—',ml+h,y+5);y+=14;}
+  sec('01','Identificação');
+  r2(['Nome',gf('nome')],['Responsável',gf('resp')]);
+  r2(['Cargo',gf('cargo')],['E-mail',gf('email')]);
+  r2(['Segmento',gf('seg')],['Tempo de Mercado',gf('tempo')]);
+  r2(['Localização',gf('local')],['Website',gf('site')]);
+  sec('02','Contexto');fld('O que a empresa faz',gf('oqueefaz'));
+  sec('03','Desafios e Objetivos');fld('Principal Desafio',gf('desafio'));fld('Gargalos',gmc('gargalos'));fld('Objetivos 12 Meses',gf('obj'));
+  sec('04','Estrutura Interna');r2(['Área Comercial',gf('com')],['Área de Marketing',gf('mkt')]);r2(['CRM',gf('crm')],['Processos',gf('proc')]);fld('Ferramentas',gmc('tools'));
+  sec('05','Histórico');fld('Consultoria Anterior',gsc('hist'));fld('O que Não Quer Repetir',gmc('norep'));
+  sec('06','Expectativas e Trabalho');fld('Expectativas 90 Dias',gf('exp'));r2(['Reuniões',gf('reu')],['Canal',gf('can')]);r2(['Decisor',gf('dec')],['Autonomia',gf('aut')]);
+  sec('07','Relacionamento');fld('Formato de Atualizações',gsc('rel'));fld('Estilo de Feedback',gsc('feed'));fld('Maior Receio',gsc('receio'));
+  sec('08','Autodiagnóstico');
+  chk(10);doc.setFillColor(...NV);doc.rect(ml,y,cw,7,'F');doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...SL);doc.text('DIMENSÃO',ml+2,y+5);doc.text('AVALIAÇÃO',ml+cw-2,y+5,{align:'right'});y+=9;
+  [{id:'r0',l:'Clareza de estratégia'},{id:'r1',l:'Posicionamento de mercado'},{id:'r2',l:'Qualidade dos processos'},{id:'r3',l:'Performance comercial'},{id:'r4',l:'Presença digital'},{id:'r5',l:'Cultura e equipe'},{id:'r6',l:'Tecnologia e dados'}].forEach((d,i)=>{chk(8);if(i%2===0){doc.setFillColor(...SF);doc.rect(ml,y-1,cw,7,'F');}doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...TX);doc.text(d.l,ml+2,y+4);doc.setFont('helvetica','bold');doc.setTextColor(...ST);doc.text(`${grv(d.id)}  ${grl(d.id)}`,ml+cw-2,y+4,{align:'right'});y+=8;});
+  y+=4;sec('09','Observações');fld('Contexto Adicional',gf('extra'));
+  chk(18);y+=6;doc.setFillColor(...NV);doc.rect(ml-2,y,cw+4,16,'F');doc.setFillColor(...ST);doc.rect(ml-2,y,cw+4,1,'F');doc.setFont('helvetica','italic');doc.setFontSize(8);doc.setTextColor(...MU);doc.text('Ao preencher este documento, você dá início à construção de uma direção estratégica sólida.',W/2,y+8,{align:'center'});doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...SL);doc.text('VHALEN COMPANY  •  Strategic Intelligence',W/2,y+14,{align:'center'});
+  _name=`Vhalen_Onboarding_${(gf('nome')).replace(/[^a-zA-Z0-9]/g,'_')}.pdf`;
+  _doc=doc;
+  showSuccess();
+}
+
+function showSuccess(){
+  const nm=F['nome']||F['resp']||'';
+  document.getElementById('successScreen').innerHTML=`
+    <div class="success-visual"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="success-core">✓</div></div>
+    <div class="success-title">Onboarding Concluído</div>
+    ${nm?`<div class="success-client">— ${nm} —</div>`:''}
+    <div class="success-line"></div>
+    <p class="success-msg">Suas respostas foram registradas com sucesso.<br/>Em breve a Vhalen Company entrará em contato para dar início ao trabalho estratégico.</p>
+    <button class="btn-pdf" onclick="if(window._doc)window._doc.save(window._name)">⬇ &nbsp;Baixar Briefing em PDF</button>`;
+  window._doc=_doc;window._name=_name;
+  document.getElementById('successScreen').classList.add('show');
+  ['topBar','progressBar','navBar'].forEach(id=>document.getElementById(id).style.display='none');
+}
+
+renderStep(0);
+</script>
+</body>
+</html>
